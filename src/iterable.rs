@@ -1,7 +1,8 @@
 use std::iter::FromIterator;
+use std::collections::HashSet;
 
 pub trait Iterable: IntoIterator {
-    type Collection<U>: FromIterator<U>;
+    type Collection<U>;
 
     fn count(self) -> usize
     where
@@ -13,6 +14,7 @@ pub trait Iterable: IntoIterator {
     fn filter_map<U>(self, f: impl Fn(Self::Item) -> Option<U>) -> Self::Collection<U>
     where
         Self: Sized,
+        Self::Collection<U>: FromIterator<U>
     {
         self.into_iter().filter_map(f).collect()
     }
@@ -21,13 +23,16 @@ pub trait Iterable: IntoIterator {
     fn filter(self, f: impl Fn(&Self::Item) -> bool) -> Self::Collection<Self::Item>
     where
         Self: Sized,
+        Self::Collection<Self::Item>: FromIterator<Self::Item>
     {
         self.into_iter().filter(f).collect()
     }
+
     // transformation
     fn map<U>(self, f: impl Fn(Self::Item) -> U) -> Self::Collection<U>
     where
         Self: Sized,
+        Self::Collection<U>: FromIterator<U>
     {
         self.into_iter().map(f).collect()
     }
@@ -42,6 +47,10 @@ impl<T> Iterable for Vec<T> {
 
 impl<'a, T: 'a> Iterable for &[T] {
     type Collection<U> = Vec<U>;
+}
+
+impl<T> Iterable for HashSet<T> {
+    type Collection<U> = HashSet<T>;
 }
 
 
