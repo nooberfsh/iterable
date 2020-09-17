@@ -65,7 +65,6 @@ pub trait IterableMap<K, V>: Iterable<Item = (K, V)> {
     }
 }
 
-
 // pub struct IterableWrap<'a, I: Iterable + 'a> {
 //     iterable: &'a I
 // }
@@ -87,4 +86,3 @@ pub trait IterableMap<K, V>: Iterable<Item = (K, V)> {
 // {
 //     type Collection<U> = I::Collection<U>;
 // }
-

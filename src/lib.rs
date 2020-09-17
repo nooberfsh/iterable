@@ -2,9 +2,8 @@
 #![feature(generic_associated_types)]
 #![allow(incomplete_features)]
 
-mod iterable;
 mod impls;
+mod iterable;
 
-pub use iterable::*;
-pub use impls::with_filter::*;
 pub use impls::*;
+pub use iterable::*;

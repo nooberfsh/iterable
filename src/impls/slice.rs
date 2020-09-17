@@ -13,6 +13,6 @@ mod tests {
     fn test_slice() {
         let v: &[i32] = &[1, 2, 3];
         let res = v.map(|i| i + 1);
-        assert_eq!(res, vec![2,3,4]);
+        assert_eq!(res, vec![2, 3, 4]);
     }
 }

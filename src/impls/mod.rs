@@ -1,8 +1,9 @@
 mod collections;
-mod slice;
 mod reference;
-pub mod with_filter;
+mod slice;
+mod with_filter;
 
 pub use collections::*;
-pub use slice::*;
 pub use reference::*;
+pub use slice::*;
+pub use with_filter::*;
