@@ -10,6 +10,7 @@ where
     I: Iterable,
     F: Fn(&I::Item) -> bool,
 {
+    type C = I::C;
     type CC<U> = I::CC<U>;
 }
 
@@ -30,6 +31,14 @@ mod tests {
     use maplit::*;
 
     use super::*;
+
+    #[test]
+    fn test_reduction() {
+        let v = vec![1, 2, 3];
+        let expected = vec![3];
+        let res = v.with_filter(|x| x > &1).filter(|x| x > &2);
+        assert_eq!(res, expected);
+    }
 
     #[test]
     fn test_vec() {
