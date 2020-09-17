@@ -3,7 +3,8 @@
 #![allow(incomplete_features)]
 
 mod iterable;
-mod with_filter;
+mod impls;
 
 pub use iterable::*;
-pub use with_filter::*;
+pub use impls::with_filter::*;
+pub use impls::*;
