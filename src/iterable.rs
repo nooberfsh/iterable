@@ -1,6 +1,8 @@
 use std::collections::{HashMap, HashSet};
 use std::iter::FromIterator;
 
+use crate::WithFilter;
+
 pub trait Iterable: IntoIterator {
     type C: FromIterator<Self::Item> = Self;
     type CC<U>;
@@ -20,7 +22,6 @@ pub trait Iterable: IntoIterator {
         self.into_iter().filter_map(f).collect()
     }
 
-    // reduction
     fn filter(self, f: impl Fn(&Self::Item) -> bool) -> Self::C
     where
         Self: Sized,
@@ -28,13 +29,19 @@ pub trait Iterable: IntoIterator {
         self.into_iter().filter(f).collect()
     }
 
-    // transformation
     fn map<U>(self, f: impl Fn(Self::Item) -> U) -> Self::CC<U>
     where
         Self: Sized,
         Self::CC<U>: FromIterator<U>,
     {
         self.into_iter().map(f).collect()
+    }
+
+    fn with_filter<F: Fn(&Self::Item) -> bool>(self, f: F) -> WithFilter<Self, F>
+    where
+        Self: Sized,
+    {
+        WithFilter { iterable: self, f }
     }
 }
 

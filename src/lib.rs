@@ -3,5 +3,7 @@
 #![allow(incomplete_features)]
 
 mod iterable;
+mod with_filter;
 
 pub use iterable::*;
+pub use with_filter::*;
