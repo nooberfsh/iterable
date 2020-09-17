@@ -36,7 +36,6 @@ pub trait Iterable: IntoIterator {
     {
         self.into_iter().map(f).collect()
     }
-
 }
 
 pub trait IterableMap<K, V>: Iterable<Item = (K, V)> {
@@ -71,7 +70,7 @@ impl<'a, T: 'a> Iterable for &[T] {
 }
 
 impl<T> Iterable for HashSet<T> {
-    type CC<U> = HashSet<T>;
+    type CC<U> = HashSet<U>;
 }
 
 impl<K, V> Iterable for HashMap<K, V> {
@@ -88,15 +87,15 @@ impl<K, V> IterableMap<K, V> for HashMap<K, V> {
 impl<'a, I> Iterable for &'a I
 where
     I: Iterable,
-    &'a I: IntoIterator<Item = &'a I::Item>,
+    &'a I: IntoIterator,
 {
     type CC<U> = I::CC<U>;
 }
 
 impl<'a, K, V, IM> IterableMap<&'a K, &'a V> for &'a IM
-    where
-        IM: IterableMap<K, V>,
-        &'a IM: Iterable<Item = (&'a K, &'a V)>,
+where
+    IM: IterableMap<K, V>,
+    &'a IM: Iterable<Item = (&'a K, &'a V)>,
 {
     type CCMap<X, Y> = IM::CCMap<X, Y>;
 }
@@ -122,3 +121,75 @@ impl<'a, K, V, IM> IterableMap<&'a K, &'a V> for &'a IM
 // {
 //     type Collection<U> = I::Collection<U>;
 // }
+
+#[cfg(test)]
+mod tests {
+    use maplit::*;
+
+    use super::*;
+
+    #[test]
+    fn test_vec() {
+        let v = vec![1, 2, 3];
+        let expected = vec!["1".to_string(), "2".to_string(), "3".to_string()];
+
+        let res = (&v).map(|i| i.to_string());
+        assert_eq!(res, expected);
+
+        let res = v.map(|i| i.to_string());
+        assert_eq!(res, expected);
+    }
+
+    #[test]
+    fn test_slice() {
+        let v: &[i32] = &[1, 2, 3];
+        let expected = vec![2, 3, 4];
+        let res = v.map(|i| i + 1);
+        assert_eq!(res, expected);
+    }
+
+    #[test]
+    fn test_hash_set() {
+        let v = hashset![1, 2, 3];
+        let expected = hashset!["1".to_string(), "2".to_string(), "3".to_string()];
+
+        let res = (&v).map(|i| i.to_string());
+        assert_eq!(res, expected);
+
+        let res = v.map(|i| i.to_string());
+        assert_eq!(res, expected);
+    }
+
+    #[test]
+    fn test_hash_map() {
+        // test Iterable
+        let v = hashmap![1 => "a",2 => "b",3 => "c"];
+        let expected = vec!["1".to_string(), "2".to_string(), "3".to_string()];
+
+        let mut res = (&v).map(|(i, _)| i.to_string());
+        res.sort();
+        assert_eq!(res, expected);
+
+        let mut res = v.clone().map(|(i, _)| i.to_string());
+        res.sort();
+        assert_eq!(res, expected);
+
+        // test IterableMap
+        let expected =
+            hashmap![&1 => "a".to_string(), &2 => "b".to_string(), &3 => "c".to_string()];
+        let res = (&v).map_value(|v| v.to_string());
+        assert_eq!(res, expected);
+
+        let expected = hashmap![1 => "a".to_string(), 2 => "b".to_string(), 3 => "c".to_string()];
+        let res = v.clone().map_value(|v| v.to_string());
+        assert_eq!(res, expected);
+
+        let expected = hashmap!["1".to_string() => "a".to_string(), "2".to_string() => "b".to_string(), "3".to_string() => "c".to_string()];
+        let res = (&v).map_kv(|(k, v)| (k.to_string(), v.to_string()));
+        assert_eq!(res, expected);
+
+        let expected = hashmap![2 => "a".to_string(), 3 => "b".to_string(), 4 => "c".to_string()];
+        let res = v.clone().map_kv(|(k, v)| (k + 1, v.to_string()));
+        assert_eq!(res, expected);
+    }
+}
