@@ -2,22 +2,29 @@ use std::collections::{HashMap, HashSet};
 
 use crate::{Iterable, IterableMap};
 
-impl<T> Iterable for Vec<T> {
+// TODO: remove 'static
+impl<T: 'static> Iterable for Vec<T> {
     type C = Self;
     type CC<U> = Vec<U>;
+    type CR<'a> = Vec<&'a T>;
 }
 
-impl<T> Iterable for HashSet<T> {
+// TODO: remove 'static
+impl<T: 'static> Iterable for HashSet<T> {
     type C = Self;
     type CC<U> = HashSet<U>;
+    type CR<'a> = HashSet<&'a T>;
 }
 
-impl<K, V> Iterable for HashMap<K, V> {
+// TODO: remove 'static
+impl<K: 'static, V: 'static> Iterable for HashMap<K, V> {
     type C = Self;
     type CC<U> = Vec<U>;
+    type CR<'a> = HashMap<&'a K, &'a V>;
 }
 
-impl<K, V> IterableMap<K, V> for HashMap<K, V> {
+// TODO: remove 'static
+impl<K: 'static, V: 'static> IterableMap<K, V> for HashMap<K, V> {
     type CCMap<X, Y> = HashMap<X, Y>;
 }
 

@@ -5,8 +5,9 @@ where
     I: Iterable,
     &'a I: IntoIterator,
 {
-    type C = I::CC<<&'a I as IntoIterator>::Item>;
+    type C = I::CR<'a>;
     type CC<U> = I::CC<U>;
+    type CR<'b> = I::CR<'b>;
 }
 
 impl<'a, K, V, IM> IterableMap<&'a K, &'a V> for &'a IM
@@ -56,9 +57,8 @@ mod tests {
         res.sort();
         assert_eq!(res, vec!["1".to_string(), "2".to_string(), "3".to_string()]);
 
-        let mut res = (&v).filter(|(i, _)| i > &&1);
-        res.sort();
-        assert_eq!(res, vec![(&2, &"b"), (&3, &"c")]);
+        let res = (&v).filter(|(i, _)| i > &&1);
+        assert_eq!(res, hashmap![&2 => &"b", &3 => &"c"]);
     }
 
     #[test]

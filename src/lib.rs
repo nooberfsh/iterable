@@ -6,4 +6,4 @@ mod impls;
 mod iterable;
 
 pub use impls::*;
-pub use iterable::*;
+pub use self::iterable::*;
