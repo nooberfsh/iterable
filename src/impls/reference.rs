@@ -25,17 +25,6 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_vec() {
-        let v = vec![1, 2, 3];
-
-        let res = (&v).map(|i| i.to_string());
-        assert_eq!(res, vec!["1".to_string(), "2".to_string(), "3".to_string()]);
-
-        let res = (&v).filter(|i| i > &&1);
-        assert_eq!(res, vec![&2, &3]);
-    }
-
-    #[test]
     fn test_hash_set() {
         let v = hashset![1, 2, 3];
 

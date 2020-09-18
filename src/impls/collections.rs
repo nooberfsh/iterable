@@ -2,12 +2,6 @@ use std::collections::{HashMap, HashSet};
 
 use crate::{Iterable, IterableMap};
 
-impl<T> Iterable for Vec<T> {
-    type C = Self;
-    type CC<U> = Vec<U>;
-    type CR<'a> where T: 'a = Vec<&'a T>;
-}
-
 impl<T> Iterable for HashSet<T> {
     type C = Self;
     type CC<U> = HashSet<U>;
@@ -30,16 +24,6 @@ mod tests {
 
     use super::*;
 
-    #[test]
-    fn test_vec() {
-        let v = vec![1, 2, 3];
-
-        let res = v.clone().map(|i| i.to_string());
-        assert_eq!(res, vec!["1".to_string(), "2".to_string(), "3".to_string()]);
-
-        let res = v.filter(|i| i > &1);
-        assert_eq!(res, vec![2, 3]);
-    }
 
     #[test]
     fn test_hash_set() {
