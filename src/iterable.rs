@@ -5,7 +5,7 @@ use crate::WithFilter;
 pub trait Iterable: IntoIterator {
     type C;
     type CC<U>;
-    type CR<'a>;
+    type CR<'a> where Self: 'a;
 
     fn count(self) -> usize
     where
