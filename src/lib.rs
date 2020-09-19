@@ -2,12 +2,15 @@
 #![feature(generic_associated_types)]
 #![allow(incomplete_features)]
 
+#[macro_use]
+mod delegate;
 mod impls;
+
 pub use impls::*;
 
 use std::iter::FromIterator;
 
-pub trait Iterable: Converter {
+pub trait Iterable: Consumer {
     type C;
     type CC<U>;
     type CR<'a> where Self: 'a;
@@ -71,18 +74,9 @@ pub trait IterableMap<K, V>: Iterable<Item = (K, V)> {
     }
 }
 
-pub trait Converter {
+pub trait Consumer {
     type Item;
     type IntoIter: Iterator<Item = Self::Item>;
 
     fn into_iter(self) -> Self::IntoIter;
-}
-
-impl<IT: IntoIterator> Converter for IT {
-    type Item = IT::Item;
-    type IntoIter = IT::IntoIter;
-
-    fn into_iter(self) -> Self::IntoIter {
-        <Self as IntoIterator>::into_iter(self)
-    }
 }

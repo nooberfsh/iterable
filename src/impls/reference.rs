@@ -1,9 +1,9 @@
-use crate::{Iterable, IterableMap, Converter};
+use crate::{Iterable, IterableMap, Consumer};
 
 impl<'a, I> Iterable for &'a I
 where
     I: Iterable,
-    &'a I: Converter,
+    &'a I: Consumer,
 {
     type C = I::CR<'a>;
     type CC<U> = I::CC<U>;

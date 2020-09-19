@@ -8,6 +8,9 @@ impl<T> Iterable for HashSet<T> {
     type CR<'a> where T: 'a = HashSet<&'a T>;
 }
 
+delegate_into_iterator!(HashSet<T>, impl <T>);
+delegate_into_iterator!(&'a HashSet<T>, impl <'a, T: 'a>);
+
 #[cfg(test)]
 mod tests {
     use maplit::*;

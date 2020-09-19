@@ -5,6 +5,10 @@ impl<T> Iterable for Vec<T> {
     type CC<U> = Vec<U>;
     type CR<'a> where T: 'a = Vec<&'a T>;
 }
+
+delegate_into_iterator!(Vec<T>, impl <T>);
+delegate_into_iterator!(&'a Vec<T>, impl <'a, T: 'a>);
+
 #[cfg(test)]
 mod tests {
     use super::*;

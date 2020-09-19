@@ -6,6 +6,8 @@ impl<'a, T: 'a> Iterable for &'a [T] {
     type CR<'b> where T: 'b = Vec<&'b T>;
 }
 
+delegate_into_iterator!(&'a [T], impl <'a, T: 'a>);
+
 #[cfg(test)]
 mod tests {
     use super::*;

@@ -12,6 +12,9 @@ impl<K, V> IterableMap<K, V> for HashMap<K, V> {
     type CCMap<X, Y> = HashMap<X, Y>;
 }
 
+delegate_into_iterator!(HashMap<K, V>, impl <K, V>);
+delegate_into_iterator!(&'a HashMap<K, V>, impl <'a, K: 'a, V: 'a>);
+
 #[cfg(test)]
 mod tests {
     use maplit::*;
