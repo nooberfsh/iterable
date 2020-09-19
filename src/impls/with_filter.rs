@@ -1,4 +1,4 @@
-use crate::Iterable;
+use crate::{Iterable, Converter};
 
 pub struct WithFilter<I, F> {
     pub(crate) iterable: I,
@@ -15,9 +15,9 @@ where
     type CR<'a> = I::CR<'a>;
 }
 
-impl<I, F> IntoIterator for WithFilter<I, F>
+impl<I, F> Converter for WithFilter<I, F>
 where
-    I: IntoIterator,
+    I: Converter,
     F: Fn(&I::Item) -> bool,
 {
     type Item = I::Item;

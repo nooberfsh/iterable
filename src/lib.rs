@@ -7,7 +7,7 @@ pub use impls::*;
 
 use std::iter::FromIterator;
 
-pub trait Iterable: IntoIterator {
+pub trait Iterable: Converter {
     type C;
     type CC<U>;
     type CR<'a> where Self: 'a;
@@ -71,24 +71,18 @@ pub trait IterableMap<K, V>: Iterable<Item = (K, V)> {
     }
 }
 
-// pub struct IterableWrap<'a, I: Iterable + 'a> {
-//     iterable: &'a I
-// }
-//
-// impl<'a, I: Iterable + 'a> IntoIterator for IterableWrap<'a, I>
-//     where &'a I: Iterable
-// {
-//     type Item = <&'a I as IntoIterator>::Item;
-//     type IntoIter = <&'a I as IntoIterator>::IntoIter;
-//
-//     fn into_iter(self) -> Self::IntoIter {
-//         self.iterable.into_iter()
-//     }
-// }
-//
-// impl<'a, I> Iterable for IterableWrap<'a, I>
-//     where I: Iterable ,
-//           &'a I : IntoIterator<Item = &'a I::Item>
-// {
-//     type Collection<U> = I::Collection<U>;
-// }
+pub trait Converter {
+    type Item;
+    type IntoIter: Iterator<Item = Self::Item>;
+
+    fn into_iter(self) -> Self::IntoIter;
+}
+
+impl<IT: IntoIterator> Converter for IT {
+    type Item = IT::Item;
+    type IntoIter = IT::IntoIter;
+
+    fn into_iter(self) -> Self::IntoIter {
+        <Self as IntoIterator>::into_iter(self)
+    }
+}
