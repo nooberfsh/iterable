@@ -29,56 +29,33 @@ where
 
 #[cfg(test)]
 mod tests {
-    use maplit::*;
-
     use super::*;
 
     #[test]
-    fn test_reduction() {
+    fn test_c() {
         let v = vec![1, 2, 3];
-        let expected = vec![3];
-        let res = v.with_filter(|x| x > &1).filter(|x| x > &2);
-        assert_eq!(res, expected);
+        let res = v.with_filter(|i| i > &1).filter(|i| i > &2);
+        assert_eq!(res, vec![3]);
     }
 
     #[test]
-    fn test_vec() {
+    fn test_cc() {
         let v = vec![1, 2, 3];
-        let expected = vec!["2".to_string(), "3".to_string()];
-
-        let res = (&v).with_filter(|x| x > &&1).map(|i| i.to_string());
-        assert_eq!(res, expected);
-
-        let res = v.with_filter(|x| x > &1).map(|i| i.to_string());
-        assert_eq!(res, expected);
+        let res = v.with_filter(|i| i > &1).map(|i| i.to_string());
+        assert_eq!(res, vec!["2".to_string(), "3".to_string()]);
     }
 
     #[test]
-    fn test_set() {
-        let v = hashset![1, 2, 3];
-        let expected = hashset!["2".to_string(), "3".to_string()];
-
-        let res = (&v).with_filter(|x| x > &&1).map(|i| i.to_string());
-        assert_eq!(res, expected);
-
-        let res = v.with_filter(|x| x > &1).map(|i| i.to_string());
-        assert_eq!(res, expected);
+    fn test_c_r() {
+        let v = vec![1, 2, 3];
+        let res = (&v).with_filter(|i| i > &&1).filter(|i| i > &&2);
+        assert_eq!(res, vec![&3]);
     }
 
     #[test]
-    fn test_map() {
-        // test Iterable
-        let v = hashmap![1 => "a",2 => "b",3 => "c"];
-        let expected = vec!["2".to_string(), "3".to_string()];
-
-        let mut res = (&v)
-            .with_filter(|(x, _)| x > &&1)
-            .map(|(i, _)| i.to_string());
-        res.sort();
-        assert_eq!(res, expected);
-
-        let mut res = v.with_filter(|(x, _)| x > &1).map(|(i, _)| i.to_string());
-        res.sort();
-        assert_eq!(res, expected);
+    fn test_cc_r() {
+        let v = vec![1, 2, 3];
+        let res = (&v).with_filter(|i| i > &&1).map(|i| i.to_string());
+        assert_eq!(res, vec!["2".to_string(), "3".to_string()]);
     }
 }
