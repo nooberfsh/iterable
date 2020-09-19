@@ -1,3 +1,6 @@
+#![feature(maybe_uninit_uninit_array)]
+#![feature(array_value_iter)]
+#![feature(min_const_generics)]
 #![feature(generic_associated_types)]
 #![allow(incomplete_features)]
 
@@ -79,7 +82,7 @@ pub trait Consumer {
 }
 
 pub trait Producer<A> {
-    fn from_iter<T>(iter: T) -> Self
+    fn from_iter<IT>(iter: IT) -> Self
     where
-        T: IntoIterator<Item = A>;
+        IT: IntoIterator<Item = A>;
 }
