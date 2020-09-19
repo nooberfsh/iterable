@@ -10,3 +10,16 @@ macro_rules! delegate_into_iterator {
         }
     }
 }
+
+macro_rules! delegate_from_iterator {
+    ($it:ty, $item:ty, impl $($args:tt)*) => {
+        impl $($args)* crate::Producer<$item> for $it {
+            fn from_iter<IT>(iter: IT) -> Self
+            where
+                IT: IntoIterator<Item = $item>,
+            {
+                <Self as std::iter::FromIterator<$item>>::from_iter(iter)
+            }
+        }
+    }
+}

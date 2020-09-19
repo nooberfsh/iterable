@@ -9,6 +9,8 @@ impl<T> Iterable for Vec<T> {
 delegate_into_iterator!(Vec<T>, impl <T>);
 delegate_into_iterator!(&'a Vec<T>, impl <'a, T: 'a>);
 
+delegate_from_iterator!(Vec<T>, T, impl <T>);
+
 #[cfg(test)]
 mod tests {
     use super::*;

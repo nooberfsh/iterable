@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::hash::Hash;
 
 use crate::{Iterable, IterableMap};
 
@@ -14,6 +15,8 @@ impl<K, V> IterableMap<K, V> for HashMap<K, V> {
 
 delegate_into_iterator!(HashMap<K, V>, impl <K, V>);
 delegate_into_iterator!(&'a HashMap<K, V>, impl <'a, K: 'a, V: 'a>);
+
+delegate_from_iterator!(HashMap<K, V>, (K, V), impl <K: Eq + Hash, V>);
 
 #[cfg(test)]
 mod tests {
