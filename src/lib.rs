@@ -140,6 +140,28 @@ pub trait Iterable: Consumer {
         Self::C::from_iter(self.into_iter().take(n))
     }
 
+    fn flat_map<U, F>(self, f: impl Fn(Self::Item) -> U) -> Self::CC<U::Item>
+    where
+        Self: Sized,
+        U: IntoIterator,
+        Self::CC<U::Item>: Producer<U::Item>,
+    {
+        Self::CC::<U::Item>::from_iter(self.into_iter().flat_map(f))
+    }
+
+    fn flatten(self) -> Self::CC<<Self::Item as IntoIterator>::Item>
+    where
+        Self: Sized,
+        Self::Item: IntoIterator,
+        Self::CC<<Self::Item as IntoIterator>::Item>: Producer<<Self::Item as IntoIterator>::Item>,
+    {
+        Self::CC::<<Self::Item as IntoIterator>::Item>::from_iter(self.into_iter().map(|item| item.into_iter()).flatten())
+    }
+
+    fn by_ref(&self) -> &Self {
+        self
+    }
+
     fn with_filter<F: Fn(&Self::Item) -> bool>(self, f: F) -> WithFilter<Self, F>
     where
         Self: Sized,
