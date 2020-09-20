@@ -1,3 +1,4 @@
+#![feature(iter_map_while)]
 #![feature(maybe_uninit_uninit_array)]
 #![feature(array_value_iter)]
 #![feature(min_const_generics)]
@@ -89,6 +90,54 @@ pub trait Iterable: Consumer {
         Self::CC<U>: Producer<U>,
     {
         Self::CC::<U>::from_iter(self.into_iter().filter_map(f))
+    }
+
+    fn enumerate(self) -> Self::CC<(usize, Self::Item)>
+    where
+        Self: Sized,
+        Self::CC<(usize, Self::Item)>: Producer<(usize, Self::Item)>,
+    {
+        Self::CC::<(usize, Self::Item)>::from_iter(self.into_iter().enumerate())
+    }
+
+    fn skip_while(self, f: impl Fn(&Self::Item) -> bool) -> Self::C
+    where
+        Self: Sized,
+        Self::C: Producer<Self::Item>,
+    {
+        Self::C::from_iter(self.into_iter().skip_while(f))
+    }
+
+    fn take_while(self, f: impl Fn(&Self::Item) -> bool) -> Self::C
+    where
+        Self: Sized,
+        Self::C: Producer<Self::Item>,
+    {
+        Self::C::from_iter(self.into_iter().take_while(f))
+    }
+
+    fn map_while<U>(self, f: impl Fn(Self::Item) -> Option<U>) -> Self::CC<U>
+    where
+        Self: Sized,
+        Self::CC<U>: Producer<U>,
+    {
+        Self::CC::<U>::from_iter(self.into_iter().map_while(f))
+    }
+
+    fn skip(self, n: usize) -> Self::C
+    where
+        Self: Sized,
+        Self::C: Producer<Self::Item>,
+    {
+        Self::C::from_iter(self.into_iter().skip(n))
+    }
+
+    fn take(self, n: usize) -> Self::C
+    where
+        Self: Sized,
+        Self::C: Producer<Self::Item>,
+    {
+        Self::C::from_iter(self.into_iter().take(n))
     }
 
     fn with_filter<F: Fn(&Self::Item) -> bool>(self, f: F) -> WithFilter<Self, F>
