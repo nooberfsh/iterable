@@ -17,7 +17,7 @@ delegate_from_iterator!(BinaryHeap<T>, T, impl <T: Ord>);
 mod tests {
     use super::*;
 
-    fn bh(v: Vec<i32>) -> BinaryHeap<i32> {
+    fn bh<T: Ord>(v: Vec<T>) -> BinaryHeap<T> {
         v.into_iter().collect()
     }
 

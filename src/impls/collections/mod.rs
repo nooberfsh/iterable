@@ -4,3 +4,4 @@ pub mod vec;
 pub mod btree_set;
 pub mod btree_map;
 pub mod binary_heap;
+pub mod linked_list;
