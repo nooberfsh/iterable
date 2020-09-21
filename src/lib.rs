@@ -1,3 +1,4 @@
+#![feature(try_trait)]
 #![feature(extend_one)]
 #![feature(associated_type_defaults)]
 #![feature(iter_map_while)]
@@ -15,6 +16,9 @@ mod impls;
 mod test;
 
 pub use impls::*;
+
+
+use std::ops::Try;
 
 pub trait Iterable: Consumer {
     type C;
@@ -183,6 +187,64 @@ pub trait Iterable: Consumer {
             }
         }
         (l, r)
+    }
+
+    fn try_fold<S, R>(self, init: S, f: impl Fn(S, Self::Item) -> R) -> R
+    where
+        Self: Sized,
+        R: Try<Ok = S>,
+    {
+        self.into_iter().try_fold(init, f)
+    }
+
+    fn try_for_each<R>(self, f: impl Fn(Self::Item) -> R) -> R
+    where
+        Self: Sized,
+        R: Try<Ok = ()>,
+    {
+        self.into_iter().try_for_each(f)
+    }
+
+    fn fold<S>(self, init: S, f: impl Fn(S, Self::Item) -> S) -> S
+    where
+        Self: Sized,
+    {
+        self.into_iter().fold(init, f)
+    }
+
+    fn all(self, f: impl Fn(Self::Item) -> bool) -> bool
+    where
+        Self: Sized,
+    {
+        self.into_iter().all(f)
+    }
+
+    fn any(self, f: impl Fn(Self::Item) -> bool) -> bool
+    where
+        Self: Sized,
+    {
+        self.into_iter().any(f)
+    }
+
+    fn find(self, f: impl Fn(&Self::Item) -> bool) -> Option<Self::Item>
+    where
+        Self: Sized,
+    {
+        self.into_iter().find(f)
+    }
+
+    fn find_map<B>(self, f: impl Fn(Self::Item) -> Option<B>) -> Option<B>
+    where
+        Self: Sized,
+    {
+        self.into_iter().find_map(f)
+    }
+
+    fn position(self, f: impl Fn(Self::Item) -> bool) -> Option<usize>
+    where
+        Self: Sized,
+    {
+        self.into_iter().position(f)
     }
 
     fn with_filter<F: Fn(&Self::Item) -> bool>(self, f: F) -> WithFilter<Self, F>
