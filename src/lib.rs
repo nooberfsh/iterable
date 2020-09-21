@@ -19,6 +19,7 @@ pub use impls::*;
 
 
 use std::ops::Try;
+use std::cmp::Ordering;
 
 pub trait Iterable: Consumer {
     type C;
@@ -245,6 +246,61 @@ pub trait Iterable: Consumer {
         Self: Sized,
     {
         self.into_iter().position(f)
+    }
+
+    fn max(self) -> Option<Self::Item>
+    where
+        Self: Sized,
+        Self::Item: Ord,
+    {
+        self.into_iter().max()
+    }
+
+    fn min(self) -> Option<Self::Item>
+    where
+        Self: Sized,
+        Self::Item: Ord,
+    {
+        self.into_iter().min()
+    }
+
+    fn max_by_key<B>(self, f: impl Fn(&Self::Item) -> B) -> Option<Self::Item>
+    where
+        Self: Sized,
+        B: Ord,
+    {
+        self.into_iter().max_by_key(f)
+    }
+
+    fn max_by<F>(self, f: impl Fn(&Self::Item, &Self::Item) -> Ordering) -> Option<Self::Item>
+    where
+        Self: Sized,
+    {
+        self.into_iter().max_by(f)
+    }
+
+    fn min_by_key<B>(self, f: impl Fn(&Self::Item) -> B) -> Option<Self::Item>
+    where
+        Self: Sized,
+        B: Ord,
+    {
+        self.into_iter().min_by_key(f)
+    }
+
+    fn min_by<F>(self, f: impl Fn(&Self::Item, &Self::Item) -> Ordering) -> Option<Self::Item>
+    where
+        Self: Sized,
+    {
+        self.into_iter().min_by(f)
+    }
+
+    fn rev(self) -> Self::C
+    where
+        Self: Sized,
+        Self::C: Producer<Self::Item>,
+        Self::IntoIter: DoubleEndedIterator,
+    {
+        Self::C::from_iter(self.into_iter().rev())
     }
 
     fn with_filter<F: Fn(&Self::Item) -> bool>(self, f: F) -> WithFilter<Self, F>
