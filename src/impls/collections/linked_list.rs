@@ -12,6 +12,7 @@ delegate_into_iterator!(LinkedList<T>, impl <T>);
 delegate_into_iterator!(&'a LinkedList<T>, impl <'a, T: 'a>);
 
 delegate_from_iterator!(LinkedList<T>, T, impl <T>);
+delegate_extend!(LinkedList<T>, T, impl <T>);
 
 #[cfg(test)]
 mod tests {

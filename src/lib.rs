@@ -1,3 +1,4 @@
+#![feature(extend_one)]
 #![feature(associated_type_defaults)]
 #![feature(iter_map_while)]
 #![feature(maybe_uninit_uninit_array)]

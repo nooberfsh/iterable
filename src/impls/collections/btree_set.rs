@@ -12,6 +12,7 @@ delegate_into_iterator!(BTreeSet<T>, impl <T>);
 delegate_into_iterator!(&'a BTreeSet<T>, impl <'a, T: 'a>);
 
 delegate_from_iterator!(BTreeSet<T>, T, impl <T: Ord>);
+delegate_extend!(BTreeSet<T>, T, impl <T: Ord>);
 
 #[cfg(test)]
 mod tests {

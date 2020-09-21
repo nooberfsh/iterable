@@ -12,6 +12,7 @@ delegate_into_iterator!(VecDeque<T>, impl <T>);
 delegate_into_iterator!(&'a VecDeque<T>, impl <'a, T: 'a>);
 
 delegate_from_iterator!(VecDeque<T>, T, impl <T>);
+delegate_extend!(VecDeque<T>, T, impl <T>);
 
 #[cfg(test)]
 mod tests {

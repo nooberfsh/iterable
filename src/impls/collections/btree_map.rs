@@ -16,6 +16,7 @@ delegate_into_iterator!(BTreeMap<K, V>, impl <K, V>);
 delegate_into_iterator!(&'a BTreeMap<K, V>, impl <'a, K: 'a, V: 'a>);
 
 delegate_from_iterator!(BTreeMap<K, V>, (K, V), impl <K: Ord, V>);
+delegate_extend!(BTreeMap<K, V>, (K, V), impl <K: Ord, V>);
 
 #[cfg(test)]
 mod tests {

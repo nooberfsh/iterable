@@ -13,6 +13,7 @@ delegate_into_iterator!(HashSet<T>, impl <T>);
 delegate_into_iterator!(&'a HashSet<T>, impl <'a, T: 'a>);
 
 delegate_from_iterator!(HashSet<T>, T, impl <T: Eq + Hash>);
+delegate_extend!(HashSet<T>, T, impl <T: Eq + Hash>);
 
 #[cfg(test)]
 mod tests {

@@ -48,7 +48,9 @@ impl Iterator for Chars {
 }
 
 delegate_from_iterator!(String, char, impl);
+delegate_extend!(String, char, impl);
 delegate_from_iterator!(String, &'a char, impl <'a>);
+delegate_extend!(String, &'a char, impl <'a>);
 
 #[cfg(test)]
 mod tests {

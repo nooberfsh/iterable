@@ -12,6 +12,7 @@ delegate_into_iterator!(BinaryHeap<T>, impl <T>);
 delegate_into_iterator!(&'a BinaryHeap<T>, impl <'a, T: 'a>);
 
 delegate_from_iterator!(BinaryHeap<T>, T, impl <T: Ord>);
+delegate_extend!(BinaryHeap<T>, T, impl <T: Ord>);
 
 #[cfg(test)]
 mod tests {
