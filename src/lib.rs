@@ -10,6 +10,9 @@
 mod delegate;
 mod impls;
 
+#[cfg(test)]
+mod test;
+
 pub use impls::*;
 
 pub trait Iterable: Consumer {
@@ -164,6 +167,23 @@ pub trait Iterable: Consumer {
         self
     }
 
+    fn partition(self, f: impl Fn(&Self::Item) -> bool) ->(Self::C, Self::C)
+    where
+        Self: Sized,
+        Self::C: GrowableProducer<Self::Item>,
+    {
+        let mut l  = <Self::C as GrowableProducer<Self::Item>>::empty();
+        let mut r  = <Self::C as GrowableProducer<Self::Item>>::empty();
+        for e in self.into_iter() {
+            if f(&e) {
+                l.add_one(e);
+            } else {
+                r.add_one(e);
+            }
+        }
+        (l, r)
+    }
+
     fn with_filter<F: Fn(&Self::Item) -> bool>(self, f: F) -> WithFilter<Self, F>
     where
         Self: Sized,
@@ -203,4 +223,9 @@ pub trait Producer<A> {
     fn from_iter<IT>(iter: IT) -> Self
     where
         IT: IntoIterator<Item = A>;
+}
+
+pub trait GrowableProducer<A>: Producer<A> {
+    fn empty() -> Self;
+    fn add_one(&mut self, a: A);
 }

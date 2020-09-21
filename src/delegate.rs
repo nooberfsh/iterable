@@ -23,3 +23,16 @@ macro_rules! delegate_from_iterator {
         }
     }
 }
+
+macro_rules! delegate_default {
+    ($it:ty, $item:ty, $grow:ident, impl $($args:tt)*) => {
+        impl $($args)* crate::GrowableProducer<$item> for $it {
+            fn empty() -> Self {
+                Default::default()
+            }
+            fn add_one(&mut self, a: $item) {
+                self.$grow(a)
+            }
+        }
+    }
+}
