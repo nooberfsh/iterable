@@ -24,8 +24,10 @@ use std::cmp::Ordering;
 pub trait Iterable: Consumer {
     type C;
     type CC<U>;
+    type F = Self::C;
     type CF<U> = Self::CC<U>;
     type CR<'a> where Self: 'a;
+    type FR<'a> where Self: 'a = Self::CR<'a>;
 
     fn count(self) -> usize
     where
@@ -294,13 +296,13 @@ pub trait Iterable: Consumer {
         self.into_iter().min_by(f)
     }
 
-    fn rev(self) -> Self::C
+    fn rev(self) -> Self::F
     where
         Self: Sized,
-        Self::C: Producer<Self::Item>,
+        Self::F: Producer<Self::Item>,
         Self::IntoIter: DoubleEndedIterator,
     {
-        Self::C::from_iter(self.into_iter().rev())
+        Self::F::from_iter(self.into_iter().rev())
     }
 
     fn unzip<A, B>(self) -> (Self::CF<A>, Self::CF<B>)

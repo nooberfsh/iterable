@@ -7,8 +7,10 @@ where
 {
     type C = I::CR<'a>;
     type CC<U> = I::CC<U>;
+    type F = I::FR<'a>;
     type CF<U> = I::CF<U>;
     type CR<'b> = I::CR<'b>;
+    type FR<'b> = I::FR<'b>;
 }
 
 impl<'a, K, V, IM> IterableMap<&'a K, &'a V> for &'a IM

@@ -6,8 +6,10 @@ use crate::{Iterable, Consumer, Producer, GrowableProducer};
 impl<T, const N: usize> Iterable for [T; N] {
     type C = Vec<T>;
     type CC<U> = Vec<U>;
+    type F = [T; N];
     type CF<U> = [U; N];
     type CR<'a> where T: 'a= Vec<&'a T>;
+    type FR<'a> where T: 'a = [&'a T; N];
 
     fn unzip<A, B>(self) -> (Self::CF<A>, Self::CF<B>)
     where
@@ -101,6 +103,14 @@ mod tests {
     fn assert_array<T, const N: usize>(_: &[T; N]) {}
 
     #[test]
+    fn test_f() {
+        let v = [1, 2, 3];
+        let res = v.rev();
+        assert_array(&res);
+        assert_eq!(res, [3, 2, 1]);
+    }
+
+    #[test]
     fn test_cf() {
         let v = [1, 2, 3];
         let res = Iterable::map(v, |i| i.to_string());
@@ -127,6 +137,14 @@ mod tests {
         let v = [1, 2, 3];
         let res = (&v).flat_map(|i| vec![*i, 1]);
         assert_eq!(res, vec![1, 1, 2, 1, 3, 1]);
+    }
+
+    #[test]
+    fn test_f_r() {
+        let v = [1, 2, 3];
+        let res = (&v).rev();
+        assert_array(&res);
+        assert_eq!(res, [&3, &2, &1]);
     }
 
     #[test]
