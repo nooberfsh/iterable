@@ -1,14 +1,27 @@
 use std::array::IntoIter;
 use std::mem::MaybeUninit;
 
-
-use crate::{Iterable, Consumer, Producer};
+use crate::{Iterable, Consumer, Producer, GrowableProducer};
 
 impl<T, const N: usize> Iterable for [T; N] {
     type C = Vec<T>;
     type CC<U> = Vec<U>;
     type CF<U> = [U; N];
     type CR<'a> where T: 'a= Vec<&'a T>;
+
+    fn unzip<A, B>(self) -> (Self::CF<A>, Self::CF<B>)
+    where
+        Self: Sized,
+        Self: Iterable<Item=(A, B)>,
+    {
+        let mut l: [MaybeUninit<A>; N] = MaybeUninit::uninit_array();
+        let mut r: [MaybeUninit<B>; N] = MaybeUninit::uninit_array();
+        for (i, (a, b)) in self.into_iter().enumerate() {
+            l[i] = MaybeUninit::new(a);
+            r[i] = MaybeUninit::new(b);
+        }
+        unsafe { (transmute(l), transmute(r)) }
+    }
 }
 
 impl<T, const N: usize> Consumer for [T; N] {
@@ -37,16 +50,32 @@ impl<T, const N: usize> Producer<T> for [T; N] {
         if count < N {
             panic!("iter's length less than array's length")
         }
-
-        // unsafe { mem::transmute::<_, [T; N]>(ret) }
-        // above does not work yet
-        // https://github.com/rust-lang/rust/issues/61956
-        // workaround
-        let ptr = &mut arr as *mut _ as *mut [T; N];
-        let res = unsafe { ptr.read() };
-        core::mem::forget(arr);
-        res
+        unsafe { transmute(arr) }
     }
+}
+
+// TODO: can we remove this?
+// this is only used for satisfy Iterable::unzip method
+// we must not use it.
+impl<T, const N: usize> GrowableProducer<T> for [T; N] {
+    fn empty() -> Self {
+        panic!("can not create empty array!")
+    }
+
+    fn add_one(&mut self, _: T) {
+        panic!("can not add element to an array!")
+    }
+}
+
+// TODO: workaround
+// unsafe { mem::transmute::<_, [T; N]>(ret) } does not work yet
+// https://github.com/rust-lang/rust/issues/61956
+#[inline]
+unsafe fn transmute<T, U, const N: usize>(mut arr: [MaybeUninit<T>; N]) -> U {
+    let ptr = &mut arr as *mut _ as *mut U;
+    let res = ptr.read();
+    core::mem::forget(arr);
+    res
 }
 
 delegate_into_iterator!(&'a [T; N], impl <'a, T: 'a, const N: usize>);
@@ -77,6 +106,13 @@ mod tests {
         let res = Iterable::map(v, |i| i.to_string());
         assert_array(&res);
         assert_eq!(res, ["1".to_string(), "2".to_string(), "3".to_string()]);
+
+        let v = [(1,2), (3, 4), (5,6)];
+        let (a, b) = v.unzip();
+        assert_array(&a);
+        assert_array(&b);
+        assert_eq!(a, [1, 3, 5]);
+        assert_eq!(b, [2, 4, 6]);
     }
 
     #[test]
@@ -113,5 +149,18 @@ mod tests {
     fn test_producer2() {
         let v = vec![1, 2, 3, 4, 5];
         <[i32; 4]>::from_iter(v);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_growable_producer_empty() {
+        <[i32; 10] as GrowableProducer<i32>>::empty();
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_growable_producer_add_one() {
+        let a = &mut [1,2,3];
+        <[i32; 3] as GrowableProducer<i32>>::add_one(a, 1);
     }
 }

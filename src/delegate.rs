@@ -36,4 +36,3 @@ macro_rules! delegate_extend {
         }
     }
 }
-

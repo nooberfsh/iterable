@@ -303,6 +303,22 @@ pub trait Iterable: Consumer {
         Self::C::from_iter(self.into_iter().rev())
     }
 
+    fn unzip<A, B>(self) -> (Self::CF<A>, Self::CF<B>)
+    where
+        Self: Sized,
+        Self: Iterable<Item=(A, B)>,
+        Self::CF<A>: GrowableProducer<A>,
+        Self::CF<B>: GrowableProducer<B>,
+    {
+        let mut l  = <Self::CF<A> as GrowableProducer<A>>::empty();
+        let mut r  = <Self::CF<B> as GrowableProducer<B>>::empty();
+        for (a, b) in self.into_iter() {
+            l.add_one(a);
+            r.add_one(b);
+        }
+        (l, r)
+    }
+
     fn with_filter<F: Fn(&Self::Item) -> bool>(self, f: F) -> WithFilter<Self, F>
     where
         Self: Sized,
