@@ -7,6 +7,7 @@ where
 {
     type C = I::CR<'a>;
     type CC<U> = I::CC<U>;
+    type CF<U> = I::CF<U>;
     type CR<'b> = I::CR<'b>;
 }
 

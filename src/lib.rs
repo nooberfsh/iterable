@@ -1,3 +1,4 @@
+#![feature(associated_type_defaults)]
 #![feature(iter_map_while)]
 #![feature(maybe_uninit_uninit_array)]
 #![feature(array_value_iter)]
@@ -14,6 +15,7 @@ pub use impls::*;
 pub trait Iterable: Consumer {
     type C;
     type CC<U>;
+    type CF<U> = Self::CC<U>;
     type CR<'a> where Self: 'a;
 
     fn count(self) -> usize
@@ -61,12 +63,12 @@ pub trait Iterable: Consumer {
         Self::CC::<(Self::Item, E)>::from_iter(self.into_iter().zip(other.into_iter()))
     }
 
-    fn map<U>(self, f: impl Fn(Self::Item) -> U) -> Self::CC<U>
+    fn map<U>(self, f: impl Fn(Self::Item) -> U) -> Self::CF<U>
     where
         Self: Sized,
-        Self::CC<U>: Producer<U>,
+        Self::CF<U>: Producer<U>,
     {
-        Self::CC::<U>::from_iter(self.into_iter().map(f))
+        Self::CF::<U>::from_iter(self.into_iter().map(f))
     }
 
     fn foreach(self, f: impl Fn(Self::Item))
@@ -92,12 +94,12 @@ pub trait Iterable: Consumer {
         Self::CC::<U>::from_iter(self.into_iter().filter_map(f))
     }
 
-    fn enumerate(self) -> Self::CC<(usize, Self::Item)>
+    fn enumerate(self) -> Self::CF<(usize, Self::Item)>
     where
         Self: Sized,
-        Self::CC<(usize, Self::Item)>: Producer<(usize, Self::Item)>,
+        Self::CF<(usize, Self::Item)>: Producer<(usize, Self::Item)>,
     {
-        Self::CC::<(usize, Self::Item)>::from_iter(self.into_iter().enumerate())
+        Self::CF::<(usize, Self::Item)>::from_iter(self.into_iter().enumerate())
     }
 
     fn skip_while(self, f: impl Fn(&Self::Item) -> bool) -> Self::C
@@ -140,7 +142,7 @@ pub trait Iterable: Consumer {
         Self::C::from_iter(self.into_iter().take(n))
     }
 
-    fn flat_map<U, F>(self, f: impl Fn(Self::Item) -> U) -> Self::CC<U::Item>
+    fn flat_map<U>(self, f: impl Fn(Self::Item) -> U) -> Self::CC<U::Item>
     where
         Self: Sized,
         U: IntoIterator,

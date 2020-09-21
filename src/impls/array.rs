@@ -6,7 +6,8 @@ use crate::{Iterable, Consumer, Producer};
 
 impl<T, const N: usize> Iterable for [T; N] {
     type C = Vec<T>;
-    type CC<U> = [U; N];
+    type CC<U> = Vec<U>;
+    type CF<U> = [U; N];
     type CR<'a> where T: 'a= Vec<&'a T>;
 }
 
@@ -64,7 +65,17 @@ mod tests {
     #[test]
     fn test_cc() {
         let v = [1, 2, 3];
+        let res = v.flat_map(|i| vec![i, 1]);
+        assert_eq!(res, vec![1, 1, 2, 1, 3, 1]);
+    }
+
+    fn assert_array<T, const N: usize>(_: &[T; N]) {}
+
+    #[test]
+    fn test_cf() {
+        let v = [1, 2, 3];
         let res = Iterable::map(v, |i| i.to_string());
+        assert_array(&res);
         assert_eq!(res, ["1".to_string(), "2".to_string(), "3".to_string()]);
     }
 
@@ -78,7 +89,15 @@ mod tests {
     #[test]
     fn test_cc_r() {
         let v = [1, 2, 3];
+        let res = (&v).flat_map(|i| vec![*i, 1]);
+        assert_eq!(res, vec![1, 1, 2, 1, 3, 1]);
+    }
+
+    #[test]
+    fn test_cf_r() {
+        let v = [1, 2, 3];
         let res = Iterable::map(&v, |i| i.to_string());
+        assert_array(&res);
         assert_eq!(res, ["1".to_string(), "2".to_string(), "3".to_string()]);
     }
 
