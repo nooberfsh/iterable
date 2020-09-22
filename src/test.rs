@@ -76,3 +76,51 @@ fn test_partial_cmp() {
     let a = l.partial_cmp(r);
     assert_eq!(a, Some(Ordering::Greater))
 }
+
+#[test]
+fn test_eq() {
+    let l = vec![2, 2, 3];
+    let r = [1,2,3];
+    let a = l.eq(r);
+    assert!(!a)
+}
+
+#[test]
+fn test_ne() {
+    let l = vec![2, 2, 3];
+    let r = [1,2,3];
+    let a = l.ne(r);
+    assert!(a)
+}
+
+#[test]
+fn test_lt() {
+    let l = vec![2, 2, 3];
+    let r = [1,2,3];
+    let a = l.lt(r);
+    assert!(!a)
+}
+
+#[test]
+fn test_le() {
+    let l = vec![2, 2, 3];
+    let r = [1,2,3];
+    let a = l.le(r);
+    assert!(!a)
+}
+
+#[test]
+fn test_gt() {
+    let l = vec![2, 2, 3];
+    let r = [1,2,3];
+    let a = l.gt(r);
+    assert!(a)
+}
+
+#[test]
+fn test_ge() {
+    let l = vec![2, 2, 3];
+    let r = [1,2,3];
+    let a = l.ge(r);
+    assert!(a)
+}

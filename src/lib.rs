@@ -378,6 +378,63 @@ pub trait Iterable: Consumer {
         self.into_iter().partial_cmp(other.into_iter())
     }
 
+    fn eq<I>(self, other: I) -> bool
+    where
+        I: Consumer,
+        Self: Sized,
+        Self::Item: PartialEq<<I as Consumer>::Item>,
+    {
+        self.into_iter().eq(other.into_iter())
+    }
+
+    fn ne<I>(self, other: I) -> bool
+    where
+        I: Consumer,
+        Self: Sized,
+        Self::Item: PartialEq<<I as Consumer>::Item>,
+    {
+        self.into_iter().ne(other.into_iter())
+    }
+
+    fn lt<I>(self, other: I) -> bool
+    where
+        I: Consumer,
+        Self: Sized,
+        Self::Item: PartialOrd<<I as Consumer>::Item>,
+    {
+        self.into_iter().lt(other.into_iter())
+    }
+
+    fn le<I>(self, other: I) -> bool
+    where
+        I: Consumer,
+        Self: Sized,
+        Self::Item: PartialOrd<<I as Consumer>::Item>,
+    {
+        self.into_iter().le(other.into_iter())
+    }
+
+    fn gt<I>(self, other: I) -> bool
+    where
+        I: Consumer,
+        Self: Sized,
+        Self::Item: PartialOrd<<I as Consumer>::Item>,
+    {
+        self.into_iter().gt(other.into_iter())
+    }
+
+    fn ge<I>(self, other: I) -> bool
+    where
+        I: Consumer,
+        Self: Sized,
+        Self::Item: PartialOrd<<I as Consumer>::Item>,
+    {
+        self.into_iter().ge(other.into_iter())
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // lazy combinator
+
     fn with_filter<F: Fn(&Self::Item) -> bool>(self, f: F) -> WithFilter<Self, F>
     where
         Self: Sized,
