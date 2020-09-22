@@ -253,6 +253,14 @@ pub trait Iterable: Consumer {
         self.into_iter().position(f)
     }
 
+    fn rposition(self, f: impl Fn(Self::Item) -> bool) -> Option<usize>
+    where
+        Self: Sized,
+        Self::IntoIter: ExactSizeIterator + DoubleEndedIterator,
+    {
+        self.into_iter().rposition(f)
+    }
+
     fn max(self) -> Option<Self::Item>
     where
         Self: Sized,

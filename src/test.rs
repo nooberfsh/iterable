@@ -92,6 +92,16 @@ fn test_position() {
 }
 
 #[test]
+fn test_rposition() {
+    let v = vec![1, 2, 3];
+    let res = v.clone().rposition(|x| x < 1);
+    assert_eq!(res, None);
+
+    let res = v.rposition(|x| x == 1);
+    assert_eq!(res, Some(0));
+}
+
+#[test]
 fn test_max() {
     let v = vec![1, 2, 3];
     let res = Iterable::max(v);
