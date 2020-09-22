@@ -47,6 +47,12 @@ impl Iterator for Chars {
     }
 }
 
+impl DoubleEndedIterator for Chars {
+    fn next_back(&mut self) -> Option<Self::Item> {
+        self.bytes.pop()
+    }
+}
+
 delegate_from_iterator!(String, char, impl);
 delegate_extend!(String, char, impl);
 delegate_from_iterator!(String, &'a char, impl <'a>);
@@ -64,6 +70,13 @@ mod tests {
     }
 
     #[test]
+    fn test_f() {
+        let v = "123你我".to_string();
+        let res = v.rev();
+        assert_eq!(res, "我你321".to_string());
+    }
+
+    #[test]
     fn test_cc() {
         let v = "123你我".to_string();
         let res = v.map(|_| 1u8);
@@ -75,6 +88,13 @@ mod tests {
         let v = "123你我".to_string();
         let res = (&v).filter(|c| *c != '你');
         assert_eq!(res, "123我".to_string());
+    }
+
+    #[test]
+    fn test_f_r() {
+        let v = "123你我".to_string();
+        let res = (&v).rev();
+        assert_eq!(res, "我你321".to_string());
     }
 
     #[test]

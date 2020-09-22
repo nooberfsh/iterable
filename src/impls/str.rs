@@ -25,6 +25,13 @@ mod tests {
     }
 
     #[test]
+    fn test_f() {
+        let v = "123你我";
+        let res = v.rev();
+        assert_eq!(res, "我你321".to_string());
+    }
+
+    #[test]
     fn test_cc() {
         let v = "123你我";
         let res = v.map(|_| 1u8);
