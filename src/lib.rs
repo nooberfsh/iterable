@@ -20,6 +20,8 @@ pub use impls::*;
 
 use std::ops::Try;
 use std::cmp::Ordering;
+use std::iter::Sum;
+use std::iter::Product;
 
 pub trait Iterable: Consumer {
     type C;
@@ -339,6 +341,22 @@ pub trait Iterable: Consumer {
         Self::CF<T>: Producer<T>,
     {
         Self::CF::<T>::from_iter(self.into_iter().cloned())
+    }
+
+    fn sum<S>(self) -> S
+    where
+        Self: Sized,
+        S: Sum<Self::Item>,
+    {
+        self.into_iter().sum()
+    }
+
+    fn product<S>(self) -> S
+    where
+        Self: Sized,
+        S: Product<Self::Item>,
+    {
+        self.into_iter().product()
     }
 
     fn with_filter<F: Fn(&Self::Item) -> bool>(self, f: F) -> WithFilter<Self, F>

@@ -45,3 +45,17 @@ fn test_cloned() {
     let b = v.cloned();
     assert_eq!(b, vec!["123".to_string()]);
 }
+
+#[test]
+fn test_sum() {
+    let v = vec![1, 2, 3];
+    let a: i32 = v.sum();
+    assert_eq!(a, 6)
+}
+
+#[test]
+fn test_product() {
+    let v = vec![2, 2, 3];
+    let a: i32 = v.product();
+    assert_eq!(a, 12)
+}
