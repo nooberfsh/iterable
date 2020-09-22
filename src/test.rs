@@ -2,6 +2,27 @@ use crate::Iterable;
 use std::cmp::Ordering;
 
 #[test]
+fn test_flat_map() {
+    let v = vec![1,2];
+    let res = v.flat_map(|x| [x, x]);
+    assert_eq!(res, vec![1,1,2,2]);
+}
+
+#[test]
+fn test_flatten() {
+    let v = vec![[1,2], [3,4]];
+    let res = v.flatten();
+    assert_eq!(res, vec![1,2,3,4]);
+}
+
+#[test]
+fn test_by_ref() {
+    let v = vec![1, 2, 3];
+    let res = v.by_ref() as *const _ as usize;
+    assert_eq!(res, &v as *const _ as usize);
+}
+
+#[test]
 fn test_partition() {
     let v = vec![1, 2, 3];
     let (l, r) = v.partition(|x| x < &2);

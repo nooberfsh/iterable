@@ -158,20 +158,20 @@ pub trait Iterable: Consumer {
 
     fn flat_map<U>(self, f: impl Fn(Self::Item) -> U) -> Self::CC<U::Item>
     where
+        U: Consumer,
         Self: Sized,
-        U: IntoIterator,
         Self::CC<U::Item>: Producer<U::Item>,
     {
-        Self::CC::<U::Item>::from_iter(self.into_iter().flat_map(f))
+        Self::CC::<U::Item>::from_iter(self.into_iter().flat_map(|t| f(t).into_iter()))
     }
 
-    fn flatten(self) -> Self::CC<<Self::Item as IntoIterator>::Item>
+    fn flatten(self) -> Self::CC<<Self::Item as Consumer>::Item>
     where
         Self: Sized,
-        Self::Item: IntoIterator,
-        Self::CC<<Self::Item as IntoIterator>::Item>: Producer<<Self::Item as IntoIterator>::Item>,
+        Self::Item: Consumer,
+        Self::CC<<Self::Item as Consumer>::Item>: Producer<<Self::Item as Consumer>::Item>,
     {
-        Self::CC::<<Self::Item as IntoIterator>::Item>::from_iter(self.into_iter().map(|item| item.into_iter()).flatten())
+        Self::CC::<<Self::Item as Consumer>::Item>::from_iter(self.into_iter().map(|item| item.into_iter()).flatten())
     }
 
     fn by_ref(&self) -> &Self {
