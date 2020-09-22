@@ -277,7 +277,7 @@ pub trait Iterable: Consumer {
         self.into_iter().max_by_key(f)
     }
 
-    fn max_by<F>(self, f: impl Fn(&Self::Item, &Self::Item) -> Ordering) -> Option<Self::Item>
+    fn max_by(self, f: impl Fn(&Self::Item, &Self::Item) -> Ordering) -> Option<Self::Item>
     where
         Self: Sized,
     {
@@ -292,7 +292,7 @@ pub trait Iterable: Consumer {
         self.into_iter().min_by_key(f)
     }
 
-    fn min_by<F>(self, f: impl Fn(&Self::Item, &Self::Item) -> Ordering) -> Option<Self::Item>
+    fn min_by(self, f: impl Fn(&Self::Item, &Self::Item) -> Ordering) -> Option<Self::Item>
     where
         Self: Sized,
     {
