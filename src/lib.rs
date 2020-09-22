@@ -321,6 +321,26 @@ pub trait Iterable: Consumer {
         (l, r)
     }
 
+    fn copied<'a, T>(self) -> Self::CF<T>
+    where
+        T: 'a + Copy,
+        Self: Sized,
+        Self: Iterable<Item = &'a T>,
+        Self::CF<T>: Producer<T>,
+    {
+        Self::CF::<T>::from_iter(self.into_iter().copied())
+    }
+
+    fn cloned<'a, T>(self) -> Self::CF<T>
+    where
+        T: 'a + Clone,
+        Self: Sized,
+        Self: Iterable<Item = &'a T>,
+        Self::CF<T>: Producer<T>,
+    {
+        Self::CF::<T>::from_iter(self.into_iter().cloned())
+    }
+
     fn with_filter<F: Fn(&Self::Item) -> bool>(self, f: F) -> WithFilter<Self, F>
     where
         Self: Sized,

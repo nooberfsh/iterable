@@ -30,3 +30,18 @@ fn test_unzip() {
     assert_eq!(a, vec![1, 3, 5]);
     assert_eq!(b, vec![2, 4, 6]);
 }
+
+#[test]
+fn test_copied() {
+    let v = vec![&1, &2, &3];
+    let a = v.copied();
+    assert_eq!(a, vec![1, 2, 3])
+}
+
+#[test]
+fn test_cloned() {
+    let s = &"123".to_string();
+    let v = vec![s];
+    let b = v.cloned();
+    assert_eq!(b, vec!["123".to_string()]);
+}
