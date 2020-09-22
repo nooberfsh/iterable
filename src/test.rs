@@ -1,4 +1,5 @@
 use crate::Iterable;
+use std::cmp::Ordering;
 
 #[test]
 fn test_growable() {
@@ -58,4 +59,20 @@ fn test_product() {
     let v = vec![2, 2, 3];
     let a: i32 = v.product();
     assert_eq!(a, 12)
+}
+
+#[test]
+fn test_cmp() {
+    let l = vec![1, 2, 3];
+    let r = [1,2,3];
+    let a = l.cmp(r);
+    assert_eq!(a, Ordering::Equal)
+}
+
+#[test]
+fn test_partial_cmp() {
+    let l = vec![2, 2, 3];
+    let r = [1,2,3];
+    let a = l.partial_cmp(r);
+    assert_eq!(a, Some(Ordering::Greater))
 }

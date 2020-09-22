@@ -22,6 +22,7 @@ use std::ops::Try;
 use std::cmp::Ordering;
 use std::iter::Sum;
 use std::iter::Product;
+use std::cmp::Ord;
 
 pub trait Iterable: Consumer {
     type C;
@@ -357,6 +358,24 @@ pub trait Iterable: Consumer {
         S: Product<Self::Item>,
     {
         self.into_iter().product()
+    }
+
+    fn cmp<I>(self, other: I) -> Ordering
+    where
+        I: Consumer<Item = Self::Item>,
+        Self: Sized,
+        Self::Item: Ord,
+    {
+        self.into_iter().cmp(other.into_iter())
+    }
+
+    fn partial_cmp<I>(self, other: I) -> Option<Ordering>
+    where
+        I: Consumer,
+        Self: Sized,
+        Self::Item: PartialOrd<<I as Consumer>::Item>,
+    {
+        self.into_iter().partial_cmp(other.into_iter())
     }
 
     fn with_filter<F: Fn(&Self::Item) -> bool>(self, f: F) -> WithFilter<Self, F>
