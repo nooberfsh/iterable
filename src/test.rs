@@ -1,5 +1,129 @@
 use crate::Iterable;
+use std::sync::atomic::AtomicUsize;
+use std::sync::atomic::Ordering::Relaxed;
 use std::cmp::Ordering;
+
+#[test]
+fn test_count() {
+    let v = vec![1,2];
+    let res = v.count();
+    assert_eq!(res, 2);
+}
+
+#[test]
+fn test_last() {
+    let v = vec![1,2];
+    let res = v.last();
+    assert_eq!(res, Some(2));
+
+    let v: Vec<i32> = vec![];
+    let res = v.last();
+    assert_eq!(res, None);
+}
+
+#[test]
+fn test_nth() {
+    let v = vec![1,2];
+    let res = v.clone().nth(10);
+    assert_eq!(res, None);
+
+    let res = v.nth(1);
+    assert_eq!(res, Some(2));
+}
+
+#[test]
+fn test_step_by() {
+    let v = vec![1,2,3,4,5];
+    let res = v.step_by(2);
+    assert_eq!(res, vec![1,3,5]);
+}
+
+#[test]
+fn test_chain() {
+    let l = vec![1,2,3];
+    let r = [4,5];
+    let res = l.chain(r);
+    assert_eq!(res, vec![1,2,3,4,5]);
+}
+
+#[test]
+fn test_zip() {
+    let l = vec![1,2,3];
+    let r = [4,5];
+    let res = l.zip(r);
+    assert_eq!(res, vec![(1,4), (2,5)]);
+}
+
+#[test]
+fn test_map() {
+    let v = vec![1, 2];
+    let res = v.map(|x| format!("{}", x));
+    assert_eq!(res, vec![1.to_string(), 2.to_string()]);
+}
+
+#[test]
+fn test_foreach() {
+    let count = AtomicUsize::new(0);
+    let v = vec![1, 2, 3];
+    v.foreach(|x| { count.fetch_add(x, Relaxed);} );
+    assert_eq!(count.load(Relaxed), 6);
+}
+
+#[test]
+fn test_filter() {
+    let v = vec![1, 2, 3];
+    let res = v.filter(|x| x < &3);
+    assert_eq!(res, vec![1, 2]);
+}
+
+#[test]
+fn test_filter_map() {
+    let v = vec![1, 2, 3];
+    let res = v.filter_map(|x| if x == 2 { None } else { Some(x)});
+    assert_eq!(res, vec![1, 3]);
+}
+
+#[test]
+fn test_enumerate() {
+    let v = vec![1, 2, 3];
+    let res = v.enumerate();
+    assert_eq!(res, vec![(0, 1), (1, 2), (2, 3)]);
+}
+
+#[test]
+fn test_skip_while() {
+    let v = vec![1,2,3];
+    let res = v.skip_while(|x| x <= &2);
+    assert_eq!(res, vec![3]);
+}
+
+#[test]
+fn test_take_while() {
+    let v = vec![1,2,3];
+    let res = v.take_while(|x| x <= &2);
+    assert_eq!(res, vec![1, 2]);
+}
+
+#[test]
+fn test_map_while() {
+    let v = vec![1,2,3];
+    let res = v.map_while(|x| if x == 2 { None } else { Some(x) });
+    assert_eq!(res, vec![1]);
+}
+
+#[test]
+fn test_skip() {
+    let v = vec![1,2,3];
+    let res = v.skip(2);
+    assert_eq!(res, vec![3]);
+}
+
+#[test]
+fn test_take() {
+    let v = vec![1,2,3];
+    let res = v.take(2);
+    assert_eq!(res, vec![1,2]);
+}
 
 #[test]
 fn test_flat_map() {

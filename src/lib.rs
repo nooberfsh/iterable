@@ -61,7 +61,7 @@ pub trait Iterable: Consumer {
         Self::C::from_iter(self.into_iter().step_by(step))
     }
 
-    fn chain(self, other: impl Iterable<Item = Self::Item>) -> Self::C
+    fn chain(self, other: impl Consumer<Item = Self::Item>) -> Self::C
     where
         Self: Sized,
         Self::C: Producer<Self::Item>,
@@ -69,7 +69,7 @@ pub trait Iterable: Consumer {
         Self::C::from_iter(self.into_iter().chain(other.into_iter()))
     }
 
-    fn zip<E>(self, other: impl Iterable<Item=E>) -> Self::CC<(Self::Item, E)>
+    fn zip<E>(self, other: impl Consumer<Item=E>) -> Self::CC<(Self::Item, E)>
     where
         Self: Sized,
         Self::CC<(Self::Item, E)>: Producer<(Self::Item, E)>,
