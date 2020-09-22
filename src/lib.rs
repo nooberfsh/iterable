@@ -32,6 +32,9 @@ pub trait Iterable: Consumer {
     type CR<'a> where Self: 'a;
     type FR<'a> where Self: 'a = Self::CR<'a>;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // std combinator
+
     fn count(self) -> usize
     where
         Self: Sized,
@@ -441,7 +444,7 @@ pub trait Iterable: Consumer {
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    // lazy combinator
+    // custom lazy combinator
 
     fn with_filter<F: Fn(&Self::Item) -> bool>(self, f: F) -> WithFilter<Self, F>
     where
