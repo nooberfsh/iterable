@@ -12,9 +12,6 @@
 mod delegate;
 mod impls;
 
-#[cfg(test)]
-mod test;
-
 pub use impls::*;
 
 
