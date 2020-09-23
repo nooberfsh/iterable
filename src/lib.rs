@@ -322,7 +322,7 @@ pub trait Iterable: Consumer {
     fn unzip<A, B>(self) -> (Self::CF<A>, Self::CF<B>)
     where
         Self: Sized,
-        Self: Iterable<Item=(A, B)>,
+        Self: Consumer<Item=(A, B)>,
         Self::CF<A>: GrowableProducer<A>,
         Self::CF<B>: GrowableProducer<B>,
     {
@@ -339,7 +339,7 @@ pub trait Iterable: Consumer {
     where
         T: 'a + Copy,
         Self: Sized,
-        Self: Iterable<Item = &'a T>,
+        Self: Consumer<Item = &'a T>,
         Self::CF<T>: Producer<T>,
     {
         Self::CF::<T>::from_iter(self.into_iter().copied())
@@ -349,7 +349,7 @@ pub trait Iterable: Consumer {
     where
         T: 'a + Clone,
         Self: Sized,
-        Self: Iterable<Item = &'a T>,
+        Self: Consumer<Item = &'a T>,
         Self::CF<T>: Producer<T>,
     {
         Self::CF::<T>::from_iter(self.into_iter().cloned())
