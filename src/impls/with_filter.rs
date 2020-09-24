@@ -39,8 +39,22 @@ mod tests {
     }
 
     #[test]
+    fn test_f() {
+        let v = [1, 2, 3];
+        let res = v.with_filter(|i| i > &1).filter(|i| i > &2);
+        assert_eq!(res, vec![3]);
+    }
+
+    #[test]
     fn test_cc() {
         let v = vec![1, 2, 3];
+        let res = v.with_filter(|i| i > &1).map(|i| i.to_string());
+        assert_eq!(res, vec!["2".to_string(), "3".to_string()]);
+    }
+
+    #[test]
+    fn test_cf() {
+        let v = [1, 2, 3];
         let res = v.with_filter(|i| i > &1).map(|i| i.to_string());
         assert_eq!(res, vec!["2".to_string(), "3".to_string()]);
     }
