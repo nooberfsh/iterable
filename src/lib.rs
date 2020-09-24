@@ -20,6 +20,9 @@ use std::cmp::Ordering;
 use std::iter::Sum;
 use std::iter::Product;
 use std::cmp::Ord;
+use std::fmt::Display;
+
+use itertools::Itertools;
 
 pub trait Iterable: Consumer {
     type C;
@@ -438,6 +441,17 @@ pub trait Iterable: Consumer {
         Self::Item: PartialOrd<<I as Consumer>::Item>,
     {
         self.into_iter().ge(other.into_iter())
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // itertools combinator
+
+    fn join(self, sep: &str) -> String
+    where
+        Self: Sized,
+        Self::Item: Display,
+    {
+        self.into_iter().join(sep)
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
