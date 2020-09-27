@@ -1,5 +1,7 @@
 use crate::{Iterable, Consumer};
 
+#[must_use = "iterable adaptors are lazy and do nothing unless consumed"]
+#[derive(Debug, Clone)]
 pub struct LazyFilter<I, F> {
     pub(crate) iterable: I,
     pub(crate) f: F,
