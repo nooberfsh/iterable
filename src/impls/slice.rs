@@ -3,7 +3,6 @@ use crate::Iterable;
 impl<'a, T: 'a> Iterable for &'a [T] {
     type C = Vec<&'a T>;
     type CC<U> = Vec<U>;
-    type CR<'b> where T: 'b = Vec<&'b T>; // unused
 }
 
 delegate_into_iterator!(&'a [T], impl <'a, T: 'a>);

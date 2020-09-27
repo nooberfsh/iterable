@@ -14,7 +14,6 @@ where
 {
     type C = I::C;
     type CC<U> = I::CC<U>;
-    type CR<'a> = I::CR<'a>;
 }
 
 impl<I, F> Consumer for LazyFilter<I, F>

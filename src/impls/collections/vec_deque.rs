@@ -5,7 +5,11 @@ use crate::Iterable;
 impl<T> Iterable for VecDeque<T> {
     type C = Self;
     type CC<U> = VecDeque<U>;
-    type CR<'a> where T: 'a = VecDeque<&'a T>;
+}
+
+impl<'a, T> Iterable for &'a VecDeque<T> {
+    type C = VecDeque<&'a T>;
+    type CC<U> = VecDeque<U>;
 }
 
 delegate_into_iterator!(VecDeque<T>, impl <T>);

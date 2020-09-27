@@ -3,7 +3,11 @@ use crate::{Iterable, Consumer};
 impl Iterable for String {
     type C = Self;
     type CC<U> = Vec<U>;
-    type CR<'a> = String;
+}
+
+impl<'a> Iterable for &'a String {
+    type C = String;
+    type CC<U> = Vec<U>;
 }
 
 impl Consumer for String {

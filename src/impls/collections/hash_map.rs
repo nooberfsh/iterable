@@ -6,10 +6,18 @@ use crate::{Iterable, IterableMap};
 impl<K, V> Iterable for HashMap<K, V> {
     type C = Self;
     type CC<U> = Vec<U>;
-    type CR<'a> where K: 'a, V: 'a = HashMap<&'a K, &'a V>;
+}
+
+impl<'a, K: 'a, V: 'a> Iterable for &'a HashMap<K, V> {
+    type C = HashMap<&'a K, &'a V>;
+    type CC<U> = Vec<U>;
 }
 
 impl<K, V> IterableMap<K, V> for HashMap<K, V> {
+    type CCMap<X, Y> = HashMap<X, Y>;
+}
+
+impl<'a, K: 'a, V: 'a> IterableMap<&'a K, &'a V> for &'a HashMap<K, V> {
     type CCMap<X, Y> = HashMap<X, Y>;
 }
 

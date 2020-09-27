@@ -5,7 +5,11 @@ use crate::Iterable;
 impl<T> Iterable for LinkedList<T> {
     type C = Self;
     type CC<U> = LinkedList<U>;
-    type CR<'a> where T: 'a = LinkedList<&'a T>;
+}
+
+impl<'a, T> Iterable for &'a LinkedList<T> {
+    type C = LinkedList<&'a T>;
+    type CC<U> = LinkedList<U>;
 }
 
 delegate_into_iterator!(LinkedList<T>, impl <T>);

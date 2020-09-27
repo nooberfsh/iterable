@@ -3,7 +3,6 @@ use crate::{Iterable, Consumer};
 impl<'a> Iterable for &'a str {
     type C = String;
     type CC<U> = Vec<U>;
-    type CR<'b> = String; // unused
 }
 
 impl<'a> Consumer for &'a str {

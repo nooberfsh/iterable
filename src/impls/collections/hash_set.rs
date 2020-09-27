@@ -6,7 +6,11 @@ use crate::Iterable;
 impl<T> Iterable for HashSet<T> {
     type C = Self;
     type CC<U> = HashSet<U>;
-    type CR<'a> where T: 'a = HashSet<&'a T>;
+}
+
+impl<'a, T> Iterable for &'a HashSet<T> {
+    type C = HashSet<&'a T>;
+    type CC<U> = HashSet<U>;
 }
 
 delegate_into_iterator!(HashSet<T>, impl <T>);

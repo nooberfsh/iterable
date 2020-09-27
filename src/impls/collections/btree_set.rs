@@ -5,7 +5,11 @@ use crate::Iterable;
 impl<T> Iterable for BTreeSet<T> {
     type C = Self;
     type CC<U> = BTreeSet<U>;
-    type CR<'a> where T: 'a = BTreeSet<&'a T>;
+}
+
+impl<'a, T: 'a> Iterable for &'a BTreeSet<T> {
+    type C = BTreeSet<&'a T>;
+    type CC<U> = BTreeSet<U>;
 }
 
 delegate_into_iterator!(BTreeSet<T>, impl <T>);

@@ -3,9 +3,13 @@ use std::collections::BinaryHeap;
 use crate::Iterable;
 
 impl<T> Iterable for BinaryHeap<T> {
-    type C = Self;
+    type C = BinaryHeap<T>;
     type CC<U> = BinaryHeap<U>;
-    type CR<'a> where T: 'a = BinaryHeap<&'a T>;
+}
+
+impl<'a, T: 'a> Iterable for &'a BinaryHeap<T> {
+    type C = BinaryHeap<&'a T>;
+    type CC<U> = BinaryHeap<U>;
 }
 
 delegate_into_iterator!(BinaryHeap<T>, impl <T>);

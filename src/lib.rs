@@ -30,8 +30,6 @@ pub trait Iterable: Consumer {
     type CC<U>;
     type F = Self::C;
     type CF<U> = Self::CC<U>;
-    type CR<'a> where Self: 'a;
-    type FR<'a> where Self: 'a = Self::CR<'a>;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // std combinator

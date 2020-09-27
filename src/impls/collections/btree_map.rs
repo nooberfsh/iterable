@@ -5,10 +5,18 @@ use crate::{Iterable, IterableMap};
 impl<K, V> Iterable for BTreeMap<K, V> {
     type C = Self;
     type CC<U> = Vec<U>;
-    type CR<'a> where K: 'a, V: 'a = BTreeMap<&'a K, &'a V>;
+}
+
+impl<'a, K: 'a, V: 'a> Iterable for &'a BTreeMap<K, V> {
+    type C = BTreeMap<&'a K, &'a V>;
+    type CC<U> = Vec<U>;
 }
 
 impl<K, V> IterableMap<K, V> for BTreeMap<K, V> {
+    type CCMap<X, Y> = BTreeMap<X, Y>;
+}
+
+impl<'a, K: 'a, V: 'a> IterableMap<&'a K, &'a V> for &'a BTreeMap<K, V> {
     type CCMap<X, Y> = BTreeMap<X, Y>;
 }
 

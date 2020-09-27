@@ -3,27 +3,40 @@ use std::mem::MaybeUninit;
 
 use crate::{Iterable, Consumer, Producer, GrowableProducer};
 
+macro_rules! unzip {
+    () => {
+        fn unzip<A, B>(self) -> (Self::CF<A>, Self::CF<B>)
+        where
+            Self: Sized,
+            Self: Iterable<Item=(A, B)>,
+        {
+            let mut l: [MaybeUninit<A>; N] = MaybeUninit::uninit_array();
+            let mut r: [MaybeUninit<B>; N] = MaybeUninit::uninit_array();
+            for (i, (a, b)) in self.consume().enumerate() {
+                l[i] = MaybeUninit::new(a);
+                r[i] = MaybeUninit::new(b);
+            }
+            unsafe { (transmute(l), transmute(r)) }
+        }
+    }
+}
+
 impl<T, const N: usize> Iterable for [T; N] {
     type C = Vec<T>;
     type CC<U> = Vec<U>;
     type F = [T; N];
     type CF<U> = [U; N];
-    type CR<'a> where T: 'a= Vec<&'a T>;
-    type FR<'a> where T: 'a = [&'a T; N];
 
-    fn unzip<A, B>(self) -> (Self::CF<A>, Self::CF<B>)
-    where
-        Self: Sized,
-        Self: Iterable<Item=(A, B)>,
-    {
-        let mut l: [MaybeUninit<A>; N] = MaybeUninit::uninit_array();
-        let mut r: [MaybeUninit<B>; N] = MaybeUninit::uninit_array();
-        for (i, (a, b)) in self.consume().enumerate() {
-            l[i] = MaybeUninit::new(a);
-            r[i] = MaybeUninit::new(b);
-        }
-        unsafe { (transmute(l), transmute(r)) }
-    }
+    unzip!();
+}
+
+impl<'a, T: 'a, const N: usize> Iterable for &'a [T; N] {
+    type C = Vec<&'a T>;
+    type CC<U> = Vec<U>;
+    type F = [&'a T; N];
+    type CF<U> = [U; N];
+
+    unzip!();
 }
 
 impl<T, const N: usize> Consumer for [T; N] {
