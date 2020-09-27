@@ -98,6 +98,7 @@ delegate_into_iterator!(&'a [T; N], impl <'a, T: 'a, const N: usize>);
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::assert_type;
 
     #[test]
     fn test_c() {
@@ -113,27 +114,24 @@ mod tests {
         assert_eq!(res, vec![1, 1, 2, 1, 3, 1]);
     }
 
-    fn assert_array<T, const N: usize>(_: &[T; N]) {}
-
     #[test]
     fn test_f() {
         let v = [1, 2, 3];
         let res = v.rev();
-        assert_array(&res);
-        assert_eq!(res, [3, 2, 1]);
+        assert_type::<[i32; 3]>(res);
     }
 
     #[test]
     fn test_cf() {
         let v = [1, 2, 3];
         let res = Iterable::map(v, |i| i.to_string());
-        assert_array(&res);
-        assert_eq!(res, ["1".to_string(), "2".to_string(), "3".to_string()]);
+        assert_type::<[String; 3]>(res);
+    }
 
+    #[test]
+    fn test_unzip() {
         let v = [(1,2), (3, 4), (5,6)];
         let (a, b) = v.unzip();
-        assert_array(&a);
-        assert_array(&b);
         assert_eq!(a, [1, 3, 5]);
         assert_eq!(b, [2, 4, 6]);
     }
@@ -156,16 +154,14 @@ mod tests {
     fn test_f_r() {
         let v = [1, 2, 3];
         let res = (&v).rev();
-        assert_array(&res);
-        assert_eq!(res, [&3, &2, &1]);
+        assert_type::<[&i32; 3]>(res);
     }
 
     #[test]
     fn test_cf_r() {
         let v = [1, 2, 3];
         let res = Iterable::map(&v, |i| i.to_string());
-        assert_array(&res);
-        assert_eq!(res, ["1".to_string(), "2".to_string(), "3".to_string()]);
+        assert_type::<[String; 3]>(res);
     }
 
     #[test]
