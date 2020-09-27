@@ -512,6 +512,14 @@ pub trait Iterable: Consumer {
          LazyFlatMap { iterable: self, f}
     }
 
+    fn lazy_flatten(self) -> LazyFlatten<Self>
+    where
+        Self: Sized,
+        Self::Item: Consumer,
+    {
+        LazyFlatten { iterable: self}
+    }
+
     fn lazy_cycle(self) -> LazyCycle<Self>
     where
         Self: Sized,
