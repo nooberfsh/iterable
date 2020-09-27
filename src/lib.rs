@@ -463,6 +463,13 @@ pub trait Iterable: Consumer {
         LazyStepBy { iterable: self, step }
     }
 
+    fn lazy_chain<C: Consumer>(self, c: C) -> LazyChain<Self, C>
+    where
+        Self: Sized,
+    {
+        LazyChain { iterable: self, c }
+    }
+
     fn lazy_zip<C: Consumer>(self, c: C) -> LazyZip<Self, C>
     where
         Self: Sized,
