@@ -505,6 +505,13 @@ pub trait Iterable: Consumer {
         LazyEnumerate { iterable: self }
     }
 
+    fn lazy_flat_map<T: Consumer, F: Fn(Self::Item) -> T>(self, f: F) -> LazyFlatMap<Self, F>
+    where
+        Self: Sized,
+    {
+         LazyFlatMap { iterable: self, f}
+    }
+
     fn lazy_cycle(self) -> LazyCycle<Self>
     where
         Self: Sized,
