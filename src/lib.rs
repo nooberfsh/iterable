@@ -483,6 +483,13 @@ pub trait Iterable: Consumer {
     {
         LazyFilterMap { iterable: self, f }
     }
+
+    fn lazy_enumerate(self) -> LazyEnumerate<Self>
+    where
+        Self: Sized,
+    {
+        LazyEnumerate { iterable: self }
+    }
 }
 
 pub trait IterableMap<K, V>: Iterable<Item = (K, V)> {

@@ -2,11 +2,13 @@ mod lazy_zip;
 mod lazy_map;
 mod lazy_filter;
 mod lazy_filter_map;
+mod lazy_enumerate;
 
-pub use lazy_zip::*;
-pub use lazy_map::*;
-pub use lazy_filter::*;
-pub use lazy_filter_map::*;
+pub use self::lazy_zip::*;
+pub use self::lazy_map::*;
+pub use self::lazy_filter::*;
+pub use self::lazy_filter_map::*;
+pub use self::lazy_enumerate::*;
 
 
 // only used for test lazy combinator
