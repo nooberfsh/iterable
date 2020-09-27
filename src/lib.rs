@@ -490,6 +490,14 @@ pub trait Iterable: Consumer {
     {
         LazyEnumerate { iterable: self }
     }
+
+    fn lazy_cycle(self) -> LazyCycle<Self>
+    where
+        Self: Sized,
+        Self::IntoIter: Clone,
+    {
+        LazyCycle { iterable: self }
+    }
 }
 
 pub trait IterableMap<K, V>: Iterable<Item = (K, V)> {

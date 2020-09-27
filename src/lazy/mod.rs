@@ -3,12 +3,14 @@ mod lazy_map;
 mod lazy_filter;
 mod lazy_filter_map;
 mod lazy_enumerate;
+mod lazy_cycle;
 
 pub use self::lazy_zip::*;
 pub use self::lazy_map::*;
 pub use self::lazy_filter::*;
 pub use self::lazy_filter_map::*;
 pub use self::lazy_enumerate::*;
+pub use self::lazy_cycle::*;
 
 
 // only used for test lazy combinator
