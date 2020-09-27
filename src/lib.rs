@@ -11,9 +11,10 @@
 #[macro_use]
 mod delegate;
 mod impls;
+mod lazy;
 
 pub use impls::*;
-
+pub use lazy::*;
 
 use std::ops::Try;
 use std::cmp::Ordering;
@@ -457,11 +458,11 @@ pub trait Iterable: Consumer {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // custom lazy combinator
 
-    fn with_filter<F: Fn(&Self::Item) -> bool>(self, f: F) -> WithFilter<Self, F>
+    fn lazy_filter<F: Fn(&Self::Item) -> bool>(self, f: F) -> LazyFilter<Self, F>
     where
         Self: Sized,
     {
-        WithFilter { iterable: self, f }
+        LazyFilter { iterable: self, f }
     }
 }
 
