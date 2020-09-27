@@ -469,6 +469,13 @@ pub trait Iterable: Consumer {
     {
         LazyMap { iterable: self, f }
     }
+
+    fn lazy_filter_map<T, F: Fn(Self::Item) -> Option<T>>(self, f: F) -> LazyFilterMap<Self, F>
+    where
+        Self: Sized,
+    {
+        LazyFilterMap { iterable: self, f }
+    }
 }
 
 pub trait IterableMap<K, V>: Iterable<Item = (K, V)> {

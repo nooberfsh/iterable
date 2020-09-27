@@ -1,8 +1,10 @@
 mod lazy_map;
 mod lazy_filter;
+mod lazy_filter_map;
 
 pub use lazy_map::*;
 pub use lazy_filter::*;
+pub use lazy_filter_map::*;
 
 
 // only used for test lazy combinator
