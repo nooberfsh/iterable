@@ -18,7 +18,7 @@ impl<T, const N: usize> Iterable for [T; N] {
     {
         let mut l: [MaybeUninit<A>; N] = MaybeUninit::uninit_array();
         let mut r: [MaybeUninit<B>; N] = MaybeUninit::uninit_array();
-        for (i, (a, b)) in self.into_iter().enumerate() {
+        for (i, (a, b)) in self.consume().enumerate() {
             l[i] = MaybeUninit::new(a);
             r[i] = MaybeUninit::new(b);
         }
@@ -30,13 +30,13 @@ impl<T, const N: usize> Consumer for [T; N] {
     type Item = T;
     type IntoIter = IntoIter<T, N>;
 
-    fn into_iter(self) -> Self::IntoIter {
+    fn consume(self) -> Self::IntoIter {
         IntoIter::new(self)
     }
 }
 
 impl<T, const N: usize> Producer<T> for [T; N] {
-    fn from_iter<IT>(iter: IT) -> Self
+    fn produce<IT>(iter: IT) -> Self
     where
         IT: IntoIterator<Item = T>
     {
@@ -159,14 +159,14 @@ mod tests {
     #[should_panic]
     fn test_producer1() {
         let v = vec![1, 2, 3];
-        <[i32; 4]>::from_iter(v);
+        <[i32; 4]>::produce(v);
     }
 
     #[test]
     #[should_panic]
     fn test_producer2() {
         let v = vec![1, 2, 3, 4, 5];
-        <[i32; 4]>::from_iter(v);
+        <[i32; 4]>::produce(v);
     }
 
     #[test]

@@ -10,7 +10,7 @@ impl Consumer for String {
     type Item = char;
     type IntoIter = Chars;
 
-    fn into_iter(self) -> Self::IntoIter {
+    fn consume(self) -> Self::IntoIter {
         Chars {
             // TODO: use String.into_bytes to avoid alloc
             bytes: self.chars().collect(),
@@ -23,7 +23,7 @@ impl<'a> Consumer for &'a String {
     type Item = char;
     type IntoIter = std::str::Chars<'a>;
 
-    fn into_iter(self) -> Self::IntoIter {
+    fn consume(self) -> Self::IntoIter {
         self.chars()
     }
 }

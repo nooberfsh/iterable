@@ -22,8 +22,8 @@ where
 {
     type Item = I::Item;
     type IntoIter = std::iter::Filter<I::IntoIter, F>;
-    fn into_iter(self) -> Self::IntoIter {
-        self.iterable.into_iter().filter(self.f)
+    fn consume(self) -> Self::IntoIter {
+        self.iterable.consume().filter(self.f)
     }
 }
 

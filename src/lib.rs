@@ -40,21 +40,21 @@ pub trait Iterable: Consumer {
     where
         Self: Sized,
     {
-        self.into_iter().count()
+        self.consume().count()
     }
 
     fn last(self) -> Option<Self::Item>
     where
         Self: Sized,
     {
-        self.into_iter().last()
+        self.consume().last()
     }
 
     fn nth(self, n: usize) -> Option<Self::Item>
     where
         Self: Sized,
     {
-        self.into_iter().nth(n)
+        self.consume().nth(n)
     }
 
     fn step_by(self, step: usize) -> Self::C
@@ -62,7 +62,7 @@ pub trait Iterable: Consumer {
         Self: Sized,
         Self::C: Producer<Self::Item>,
     {
-        Self::C::from_iter(self.into_iter().step_by(step))
+        Self::C::produce(self.consume().step_by(step))
     }
 
     fn chain(self, other: impl Consumer<Item = Self::Item>) -> Self::C
@@ -70,7 +70,7 @@ pub trait Iterable: Consumer {
         Self: Sized,
         Self::C: Producer<Self::Item>,
     {
-        Self::C::from_iter(self.into_iter().chain(other.into_iter()))
+        Self::C::produce(self.consume().chain(other.consume()))
     }
 
     fn zip<E>(self, other: impl Consumer<Item=E>) -> Self::CC<(Self::Item, E)>
@@ -78,7 +78,7 @@ pub trait Iterable: Consumer {
         Self: Sized,
         Self::CC<(Self::Item, E)>: Producer<(Self::Item, E)>,
     {
-        Self::CC::<(Self::Item, E)>::from_iter(self.into_iter().zip(other.into_iter()))
+        Self::CC::<(Self::Item, E)>::produce(self.consume().zip(other.consume()))
     }
 
     fn map<U>(self, f: impl Fn(Self::Item) -> U) -> Self::CF<U>
@@ -86,14 +86,14 @@ pub trait Iterable: Consumer {
         Self: Sized,
         Self::CF<U>: Producer<U>,
     {
-        Self::CF::<U>::from_iter(self.into_iter().map(f))
+        Self::CF::<U>::produce(self.consume().map(f))
     }
 
     fn foreach(self, f: impl Fn(Self::Item))
     where
         Self: Sized,
     {
-        self.into_iter().for_each(f)
+        self.consume().for_each(f)
     }
 
     fn filter(self, f: impl Fn(&Self::Item) -> bool) -> Self::C
@@ -101,7 +101,7 @@ pub trait Iterable: Consumer {
         Self: Sized,
         Self::C: Producer<Self::Item>,
     {
-        Self::C::from_iter(self.into_iter().filter(f))
+        Self::C::produce(self.consume().filter(f))
     }
 
     fn filter_map<U>(self, f: impl Fn(Self::Item) -> Option<U>) -> Self::CC<U>
@@ -109,7 +109,7 @@ pub trait Iterable: Consumer {
         Self: Sized,
         Self::CC<U>: Producer<U>,
     {
-        Self::CC::<U>::from_iter(self.into_iter().filter_map(f))
+        Self::CC::<U>::produce(self.consume().filter_map(f))
     }
 
     fn enumerate(self) -> Self::CF<(usize, Self::Item)>
@@ -117,7 +117,7 @@ pub trait Iterable: Consumer {
         Self: Sized,
         Self::CF<(usize, Self::Item)>: Producer<(usize, Self::Item)>,
     {
-        Self::CF::<(usize, Self::Item)>::from_iter(self.into_iter().enumerate())
+        Self::CF::<(usize, Self::Item)>::produce(self.consume().enumerate())
     }
 
     fn skip_while(self, f: impl Fn(&Self::Item) -> bool) -> Self::C
@@ -125,7 +125,7 @@ pub trait Iterable: Consumer {
         Self: Sized,
         Self::C: Producer<Self::Item>,
     {
-        Self::C::from_iter(self.into_iter().skip_while(f))
+        Self::C::produce(self.consume().skip_while(f))
     }
 
     fn take_while(self, f: impl Fn(&Self::Item) -> bool) -> Self::C
@@ -133,7 +133,7 @@ pub trait Iterable: Consumer {
         Self: Sized,
         Self::C: Producer<Self::Item>,
     {
-        Self::C::from_iter(self.into_iter().take_while(f))
+        Self::C::produce(self.consume().take_while(f))
     }
 
     fn map_while<U>(self, f: impl Fn(Self::Item) -> Option<U>) -> Self::CC<U>
@@ -141,7 +141,7 @@ pub trait Iterable: Consumer {
         Self: Sized,
         Self::CC<U>: Producer<U>,
     {
-        Self::CC::<U>::from_iter(self.into_iter().map_while(f))
+        Self::CC::<U>::produce(self.consume().map_while(f))
     }
 
     fn skip(self, n: usize) -> Self::C
@@ -149,7 +149,7 @@ pub trait Iterable: Consumer {
         Self: Sized,
         Self::C: Producer<Self::Item>,
     {
-        Self::C::from_iter(self.into_iter().skip(n))
+        Self::C::produce(self.consume().skip(n))
     }
 
     fn take(self, n: usize) -> Self::C
@@ -157,7 +157,7 @@ pub trait Iterable: Consumer {
         Self: Sized,
         Self::C: Producer<Self::Item>,
     {
-        Self::C::from_iter(self.into_iter().take(n))
+        Self::C::produce(self.consume().take(n))
     }
 
     fn flat_map<U>(self, f: impl Fn(Self::Item) -> U) -> Self::CC<U::Item>
@@ -166,7 +166,7 @@ pub trait Iterable: Consumer {
         Self: Sized,
         Self::CC<U::Item>: Producer<U::Item>,
     {
-        Self::CC::<U::Item>::from_iter(self.into_iter().flat_map(|t| f(t).into_iter()))
+        Self::CC::<U::Item>::produce(self.consume().flat_map(|t| f(t).consume()))
     }
 
     fn flatten(self) -> Self::CC<<Self::Item as Consumer>::Item>
@@ -175,7 +175,7 @@ pub trait Iterable: Consumer {
         Self::Item: Consumer,
         Self::CC<<Self::Item as Consumer>::Item>: Producer<<Self::Item as Consumer>::Item>,
     {
-        Self::CC::<<Self::Item as Consumer>::Item>::from_iter(self.into_iter().map(|item| item.into_iter()).flatten())
+        Self::CC::<<Self::Item as Consumer>::Item>::produce(self.consume().map(|item| item.consume()).flatten())
     }
 
     fn by_ref(&self) -> &Self {
@@ -189,7 +189,7 @@ pub trait Iterable: Consumer {
     {
         let mut l  = <Self::C as GrowableProducer<Self::Item>>::empty();
         let mut r  = <Self::C as GrowableProducer<Self::Item>>::empty();
-        for e in self.into_iter() {
+        for e in self.consume() {
             if f(&e) {
                 l.add_one(e);
             } else {
@@ -204,7 +204,7 @@ pub trait Iterable: Consumer {
         Self: Sized,
         R: Try<Ok = S>,
     {
-        self.into_iter().try_fold(init, f)
+        self.consume().try_fold(init, f)
     }
 
     fn try_for_each<R>(self, f: impl Fn(Self::Item) -> R) -> R
@@ -212,49 +212,49 @@ pub trait Iterable: Consumer {
         Self: Sized,
         R: Try<Ok = ()>,
     {
-        self.into_iter().try_for_each(f)
+        self.consume().try_for_each(f)
     }
 
     fn fold<S>(self, init: S, f: impl Fn(S, Self::Item) -> S) -> S
     where
         Self: Sized,
     {
-        self.into_iter().fold(init, f)
+        self.consume().fold(init, f)
     }
 
     fn all(self, f: impl Fn(Self::Item) -> bool) -> bool
     where
         Self: Sized,
     {
-        self.into_iter().all(f)
+        self.consume().all(f)
     }
 
     fn any(self, f: impl Fn(Self::Item) -> bool) -> bool
     where
         Self: Sized,
     {
-        self.into_iter().any(f)
+        self.consume().any(f)
     }
 
     fn find(self, f: impl Fn(&Self::Item) -> bool) -> Option<Self::Item>
     where
         Self: Sized,
     {
-        self.into_iter().find(f)
+        self.consume().find(f)
     }
 
     fn find_map<B>(self, f: impl Fn(Self::Item) -> Option<B>) -> Option<B>
     where
         Self: Sized,
     {
-        self.into_iter().find_map(f)
+        self.consume().find_map(f)
     }
 
     fn position(self, f: impl Fn(Self::Item) -> bool) -> Option<usize>
     where
         Self: Sized,
     {
-        self.into_iter().position(f)
+        self.consume().position(f)
     }
 
     fn rposition(self, f: impl Fn(Self::Item) -> bool) -> Option<usize>
@@ -262,7 +262,7 @@ pub trait Iterable: Consumer {
         Self: Sized,
         Self::IntoIter: ExactSizeIterator + DoubleEndedIterator,
     {
-        self.into_iter().rposition(f)
+        self.consume().rposition(f)
     }
 
     fn max(self) -> Option<Self::Item>
@@ -270,7 +270,7 @@ pub trait Iterable: Consumer {
         Self: Sized,
         Self::Item: Ord,
     {
-        self.into_iter().max()
+        self.consume().max()
     }
 
     fn min(self) -> Option<Self::Item>
@@ -278,7 +278,7 @@ pub trait Iterable: Consumer {
         Self: Sized,
         Self::Item: Ord,
     {
-        self.into_iter().min()
+        self.consume().min()
     }
 
     fn max_by_key<B>(self, f: impl Fn(&Self::Item) -> B) -> Option<Self::Item>
@@ -286,14 +286,14 @@ pub trait Iterable: Consumer {
         Self: Sized,
         B: Ord,
     {
-        self.into_iter().max_by_key(f)
+        self.consume().max_by_key(f)
     }
 
     fn max_by(self, f: impl Fn(&Self::Item, &Self::Item) -> Ordering) -> Option<Self::Item>
     where
         Self: Sized,
     {
-        self.into_iter().max_by(f)
+        self.consume().max_by(f)
     }
 
     fn min_by_key<B>(self, f: impl Fn(&Self::Item) -> B) -> Option<Self::Item>
@@ -301,14 +301,14 @@ pub trait Iterable: Consumer {
         Self: Sized,
         B: Ord,
     {
-        self.into_iter().min_by_key(f)
+        self.consume().min_by_key(f)
     }
 
     fn min_by(self, f: impl Fn(&Self::Item, &Self::Item) -> Ordering) -> Option<Self::Item>
     where
         Self: Sized,
     {
-        self.into_iter().min_by(f)
+        self.consume().min_by(f)
     }
 
     fn rev(self) -> Self::F
@@ -317,7 +317,7 @@ pub trait Iterable: Consumer {
         Self::F: Producer<Self::Item>,
         Self::IntoIter: DoubleEndedIterator,
     {
-        Self::F::from_iter(self.into_iter().rev())
+        Self::F::produce(self.consume().rev())
     }
 
     fn unzip<A, B>(self) -> (Self::CF<A>, Self::CF<B>)
@@ -329,7 +329,7 @@ pub trait Iterable: Consumer {
     {
         let mut l  = <Self::CF<A> as GrowableProducer<A>>::empty();
         let mut r  = <Self::CF<B> as GrowableProducer<B>>::empty();
-        for (a, b) in self.into_iter() {
+        for (a, b) in self.consume() {
             l.add_one(a);
             r.add_one(b);
         }
@@ -343,7 +343,7 @@ pub trait Iterable: Consumer {
         Self: Consumer<Item = &'a T>,
         Self::CF<T>: Producer<T>,
     {
-        Self::CF::<T>::from_iter(self.into_iter().copied())
+        Self::CF::<T>::produce(self.consume().copied())
     }
 
     fn cloned<'a, T>(self) -> Self::CF<T>
@@ -353,7 +353,7 @@ pub trait Iterable: Consumer {
         Self: Consumer<Item = &'a T>,
         Self::CF<T>: Producer<T>,
     {
-        Self::CF::<T>::from_iter(self.into_iter().cloned())
+        Self::CF::<T>::produce(self.consume().cloned())
     }
 
     fn sum<S>(self) -> S
@@ -361,7 +361,7 @@ pub trait Iterable: Consumer {
         Self: Sized,
         S: Sum<Self::Item>,
     {
-        self.into_iter().sum()
+        self.consume().sum()
     }
 
     fn product<S>(self) -> S
@@ -369,7 +369,7 @@ pub trait Iterable: Consumer {
         Self: Sized,
         S: Product<Self::Item>,
     {
-        self.into_iter().product()
+        self.consume().product()
     }
 
     fn cmp<I>(self, other: I) -> Ordering
@@ -378,7 +378,7 @@ pub trait Iterable: Consumer {
         Self: Sized,
         Self::Item: Ord,
     {
-        self.into_iter().cmp(other.into_iter())
+        self.consume().cmp(other.consume())
     }
 
     fn partial_cmp<I>(self, other: I) -> Option<Ordering>
@@ -387,7 +387,7 @@ pub trait Iterable: Consumer {
         Self: Sized,
         Self::Item: PartialOrd<<I as Consumer>::Item>,
     {
-        self.into_iter().partial_cmp(other.into_iter())
+        self.consume().partial_cmp(other.consume())
     }
 
     fn eq<I>(self, other: I) -> bool
@@ -396,7 +396,7 @@ pub trait Iterable: Consumer {
         Self: Sized,
         Self::Item: PartialEq<<I as Consumer>::Item>,
     {
-        self.into_iter().eq(other.into_iter())
+        self.consume().eq(other.consume())
     }
 
     fn ne<I>(self, other: I) -> bool
@@ -405,7 +405,7 @@ pub trait Iterable: Consumer {
         Self: Sized,
         Self::Item: PartialEq<<I as Consumer>::Item>,
     {
-        self.into_iter().ne(other.into_iter())
+        self.consume().ne(other.consume())
     }
 
     fn lt<I>(self, other: I) -> bool
@@ -414,7 +414,7 @@ pub trait Iterable: Consumer {
         Self: Sized,
         Self::Item: PartialOrd<<I as Consumer>::Item>,
     {
-        self.into_iter().lt(other.into_iter())
+        self.consume().lt(other.consume())
     }
 
     fn le<I>(self, other: I) -> bool
@@ -423,7 +423,7 @@ pub trait Iterable: Consumer {
         Self: Sized,
         Self::Item: PartialOrd<<I as Consumer>::Item>,
     {
-        self.into_iter().le(other.into_iter())
+        self.consume().le(other.consume())
     }
 
     fn gt<I>(self, other: I) -> bool
@@ -432,7 +432,7 @@ pub trait Iterable: Consumer {
         Self: Sized,
         Self::Item: PartialOrd<<I as Consumer>::Item>,
     {
-        self.into_iter().gt(other.into_iter())
+        self.consume().gt(other.consume())
     }
 
     fn ge<I>(self, other: I) -> bool
@@ -441,7 +441,7 @@ pub trait Iterable: Consumer {
         Self: Sized,
         Self::Item: PartialOrd<<I as Consumer>::Item>,
     {
-        self.into_iter().ge(other.into_iter())
+        self.consume().ge(other.consume())
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -452,7 +452,7 @@ pub trait Iterable: Consumer {
         Self: Sized,
         Self::Item: Display,
     {
-        self.into_iter().join(sep)
+        self.consume().join(sep)
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -474,7 +474,7 @@ pub trait IterableMap<K, V>: Iterable<Item = (K, V)> {
         Self: Sized,
         Self::CCMap<K, U>: Producer<(K, U)>,
     {
-        Self::CCMap::<K, U>::from_iter(self.into_iter().map(|(k, v)| (k, f(v))))
+        Self::CCMap::<K, U>::produce(self.consume().map(|(k, v)| (k, f(v))))
     }
 
     fn map_kv<X, Y>(self, f: impl Fn((K, V)) -> (X, Y)) -> Self::CCMap<X, Y>
@@ -482,7 +482,7 @@ pub trait IterableMap<K, V>: Iterable<Item = (K, V)> {
         Self: Sized,
         Self::CCMap<X, Y>: Producer<(X, Y)>,
     {
-        Self::CCMap::<X, Y>::from_iter(self.into_iter().map(f))
+        Self::CCMap::<X, Y>::produce(self.consume().map(f))
     }
 }
 
@@ -490,11 +490,11 @@ pub trait Consumer {
     type Item;
     type IntoIter: Iterator<Item = Self::Item>;
 
-    fn into_iter(self) -> Self::IntoIter;
+    fn consume(self) -> Self::IntoIter;
 }
 
 pub trait Producer<A> {
-    fn from_iter<IT>(iter: IT) -> Self
+    fn produce<IT>(iter: IT) -> Self
     where
         IT: IntoIterator<Item = A>;
 }

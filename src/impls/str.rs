@@ -10,7 +10,7 @@ impl<'a> Consumer for &'a str {
     type Item = char;
     type IntoIter = std::str::Chars<'a>;
 
-    fn into_iter(self) -> Self::IntoIter {self.chars()}
+    fn consume(self) -> Self::IntoIter {self.chars()}
 }
 
 #[cfg(test)]
