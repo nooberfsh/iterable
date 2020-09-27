@@ -456,6 +456,13 @@ pub trait Iterable: Consumer {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // lazy combinator
 
+    fn lazy_step_by(self, step: usize) -> LazyStepBy<Self>
+    where
+        Self: Sized,
+    {
+        LazyStepBy { iterable: self, step }
+    }
+
     fn lazy_zip<C: Consumer>(self, c: C) -> LazyZip<Self, C>
     where
         Self: Sized,
