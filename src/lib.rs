@@ -32,7 +32,7 @@ pub trait Iterable: Consumer {
     type CF<U> = Self::CC<U>;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    // std combinator
+    // from std
 
     fn count(self) -> usize
     where
@@ -443,7 +443,7 @@ pub trait Iterable: Consumer {
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    // itertools combinator
+    // from itertools
 
     fn join(self, sep: &str) -> String
     where
@@ -454,13 +454,20 @@ pub trait Iterable: Consumer {
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    // custom lazy combinator
+    // lazy combinator
 
     fn lazy_filter<F: Fn(&Self::Item) -> bool>(self, f: F) -> LazyFilter<Self, F>
     where
         Self: Sized,
     {
         LazyFilter { iterable: self, f }
+    }
+
+    fn lazy_map<T, F: Fn(Self::Item) -> T>(self, f: F) -> LazyMap<Self, F>
+    where
+        Self: Sized,
+    {
+        LazyMap { iterable: self, f }
     }
 }
 
@@ -501,3 +508,6 @@ pub trait GrowableProducer<A>: Producer<A> {
     fn empty() -> Self;
     fn add_one(&mut self, a: A);
 }
+
+#[cfg(test)]
+fn assert_type<T>(_t: T) {}

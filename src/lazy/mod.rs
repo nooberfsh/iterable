@@ -1,5 +1,7 @@
+mod lazy_map;
 mod lazy_filter;
 
+pub use lazy_map::*;
 pub use lazy_filter::*;
 
 
