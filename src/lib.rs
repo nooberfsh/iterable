@@ -456,6 +456,13 @@ pub trait Iterable: Consumer {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // lazy combinator
 
+    fn lazy_zip<C: Consumer>(self, c: C) -> LazyZip<Self, C>
+    where
+        Self: Sized,
+    {
+        LazyZip { iterable: self, c }
+    }
+
     fn lazy_filter<F: Fn(&Self::Item) -> bool>(self, f: F) -> LazyFilter<Self, F>
     where
         Self: Sized,
