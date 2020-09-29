@@ -24,6 +24,7 @@ use std::cmp::Ord;
 use std::fmt::Display;
 
 use itertools::Itertools;
+use std::marker::PhantomData;
 
 pub trait Iterable: Consumer {
     type C;
@@ -526,6 +527,18 @@ pub trait Iterable: Consumer {
         Self::IntoIter: DoubleEndedIterator,
     {
         LazyRev { iterable: self}
+    }
+
+    fn lazy_copied<'a, T>(self) -> LazyCopied<'a, Self, T>
+    where
+        T: 'a + Copy,
+        Self: Sized,
+        Self: Consumer<Item = &'a T>,
+    {
+        LazyCopied {
+            iterable: self,
+            _marker: PhantomData,
+        }
     }
 
     fn lazy_cycle(self) -> LazyCycle<Self>
