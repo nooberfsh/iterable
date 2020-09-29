@@ -506,6 +506,13 @@ pub trait Iterable: Consumer {
         LazyEnumerate { iterable: self }
     }
 
+    fn lazy_skip_while<F: Fn(&Self::Item) -> bool>(self, f: F) -> LazySkipWhile<Self, F>
+    where
+        Self: Sized,
+    {
+        LazySkipWhile { iterable: self, f }
+    }
+
     fn lazy_flat_map<T: Consumer, F: Fn(Self::Item) -> T>(self, f: F) -> LazyFlatMap<Self, F>
     where
         Self: Sized,
