@@ -158,6 +158,22 @@ pub trait Iterable: Consumer {
         Self::C::produce(self.consume().take(n))
     }
 
+    fn scan<S>(self, init: S, f: impl Fn(S, Self::Item) -> S) -> Self::CC<S>
+    where
+        S: Clone,
+        Self: Sized,
+        Self::CC<S>: GrowableProducer<S>,
+    {
+        let mut emtpy = <Self::CC<S> as GrowableProducer<S>>::empty();
+        emtpy.add_one(init.clone());
+        let (xs, _) = self.fold((emtpy, init), |(mut xs, s), a| {
+            let new_s = f(s, a);
+            xs.add_one(new_s.clone());
+            (xs, new_s)
+        });
+        xs
+    }
+
     fn flat_map<U>(self, f: impl Fn(Self::Item) -> U) -> Self::CC<U::Item>
     where
         U: Consumer,

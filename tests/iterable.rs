@@ -127,6 +127,17 @@ fn test_take() {
 }
 
 #[test]
+fn test_scan() {
+    let v = vec![1,2,3];
+    let res = v.scan(10, |s, a| s + a);
+    assert_eq!(res, vec![10, 11, 13, 16]);
+
+    let v: Vec<i32> = vec![];
+    let res = v.scan(10, |s, a| s + a);
+    assert_eq!(res, vec![10]);
+}
+
+#[test]
 fn test_flat_map() {
     let v = vec![1,2];
     let res = v.flat_map(|x| [x, x]);
