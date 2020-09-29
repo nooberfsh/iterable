@@ -526,6 +526,13 @@ pub trait Iterable: Consumer {
         LazySkip { iterable: self, n}
     }
 
+    fn lazy_take(self, n: usize) -> LazyTake<Self>
+    where
+        Self: Sized,
+    {
+        LazyTake { iterable: self, n}
+    }
+
     fn lazy_flat_map<T: Consumer, F: Fn(Self::Item) -> T>(self, f: F) -> LazyFlatMap<Self, F>
     where
         Self: Sized,
