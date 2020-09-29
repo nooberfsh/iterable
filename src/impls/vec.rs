@@ -3,6 +3,11 @@ use crate::Iterable;
 impl<T> Iterable for Vec<T> {
     type C = Self;
     type CC<U> = Vec<U>;
+
+    fn rev(mut self) -> Self::F {
+        self.reverse();
+        self
+    }
 }
 
 impl<'a, T: 'a> Iterable for &'a Vec<T> {
