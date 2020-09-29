@@ -541,6 +541,18 @@ pub trait Iterable: Consumer {
         }
     }
 
+    fn lazy_cloned<'a, T>(self) -> LazyCloned<'a, Self, T>
+    where
+        T: 'a + Clone,
+        Self: Sized,
+        Self: Consumer<Item = &'a T>,
+    {
+        LazyCloned {
+            iterable: self,
+            _marker: PhantomData,
+        }
+    }
+
     fn lazy_cycle(self) -> LazyCycle<Self>
     where
         Self: Sized,

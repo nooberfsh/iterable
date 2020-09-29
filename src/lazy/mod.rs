@@ -10,6 +10,7 @@ mod lazy_flatten;
 mod lazy_cycle;
 mod lazy_rev;
 mod lazy_copied;
+mod lazy_cloned;
 
 pub use self::lazy_step_by::*;
 pub use self::lazy_chain::*;
@@ -23,6 +24,7 @@ pub use self::lazy_flatten::*;
 pub use self::lazy_cycle::*;
 pub use self::lazy_rev::*;
 pub use self::lazy_copied::*;
+pub use self::lazy_cloned::*;
 
 
 // only used for test lazy combinator
