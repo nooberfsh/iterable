@@ -1,6 +1,6 @@
 [package]
 name = "iterable"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["nooberfsh <nooberfsh@gmail.com>"]
 edition = "2018"
 description = "An iterable library for Rust collection like types."
@@ -8,7 +8,7 @@ license = "MIT"
 repository = "https://github.com/nooberfsh/iterable"
 homepage = "https://github.com/nooberfsh/iterable"
 documentation = "https://docs.rs/iterable"
-keywords = ["iterable", "collection", "traversable"]
+keywords = ["iterable", "collection", "traversable", "strict", "lazy"]
 readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
