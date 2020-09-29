@@ -8,6 +8,7 @@ mod lazy_enumerate;
 mod lazy_flat_map;
 mod lazy_flatten;
 mod lazy_cycle;
+mod lazy_rev;
 
 pub use self::lazy_step_by::*;
 pub use self::lazy_chain::*;
@@ -19,6 +20,7 @@ pub use self::lazy_enumerate::*;
 pub use self::lazy_flat_map::*;
 pub use self::lazy_flatten::*;
 pub use self::lazy_cycle::*;
+pub use self::lazy_rev::*;
 
 
 // only used for test lazy combinator

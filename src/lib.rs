@@ -520,6 +520,14 @@ pub trait Iterable: Consumer {
         LazyFlatten { iterable: self}
     }
 
+    fn lazy_rev(self) -> LazyRev<Self>
+    where
+        Self: Sized,
+        Self::IntoIter: DoubleEndedIterator,
+    {
+        LazyRev { iterable: self}
+    }
+
     fn lazy_cycle(self) -> LazyCycle<Self>
     where
         Self: Sized,
