@@ -13,6 +13,7 @@ mod lazy_copied;
 mod lazy_cloned;
 mod lazy_skip_while;
 mod lazy_map_while;
+mod lazy_skip;
 
 pub use self::lazy_step_by::*;
 pub use self::lazy_chain::*;
@@ -29,6 +30,7 @@ pub use self::lazy_copied::*;
 pub use self::lazy_cloned::*;
 pub use self::lazy_skip_while::*;
 pub use self::lazy_map_while::*;
+pub use self::lazy_skip::*;
 
 
 // only used for test lazy combinator
