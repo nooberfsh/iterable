@@ -1,14 +1,12 @@
 use crate::{Iterable, Consumer};
-use std::marker::PhantomData;
 
 #[must_use = "iterable adaptors are lazy and do nothing unless consumed"]
 #[derive(Debug, Clone)]
-pub struct LazyCloned<'a, I, T> {
+pub struct LazyCloned<I> {
     pub(crate) iterable: I,
-    pub(crate) _marker: PhantomData<&'a T>,
 }
 
-impl<'a, I, T> Iterable for LazyCloned<'a, I, T>
+impl<'a, I, T> Iterable for LazyCloned<I>
 where
     T: 'a + Clone,
     I: Iterable<Item = &'a T>,
@@ -19,7 +17,7 @@ where
     type CF<U> = I::CF<U>;
 }
 
-impl<'a, I, T> Consumer for LazyCloned<'a, I, T>
+impl<'a, I, T> Consumer for LazyCloned<I>
 where
     T: 'a + Clone,
     I: Consumer<Item = &'a T>,

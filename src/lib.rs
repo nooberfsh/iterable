@@ -24,7 +24,6 @@ use std::cmp::Ord;
 use std::fmt::Display;
 
 use itertools::Itertools;
-use std::marker::PhantomData;
 
 pub trait Iterable: Consumer {
     type C;
@@ -543,7 +542,7 @@ pub trait Iterable: Consumer {
         LazyRev { iterable: self}
     }
 
-    fn lazy_copied<'a, T>(self) -> LazyCopied<'a, Self, T>
+    fn lazy_copied<'a, T>(self) -> LazyCopied<Self>
     where
         T: 'a + Copy,
         Self: Sized,
@@ -551,11 +550,10 @@ pub trait Iterable: Consumer {
     {
         LazyCopied {
             iterable: self,
-            _marker: PhantomData,
         }
     }
 
-    fn lazy_cloned<'a, T>(self) -> LazyCloned<'a, Self, T>
+    fn lazy_cloned<'a, T>(self) -> LazyCloned<Self>
     where
         T: 'a + Clone,
         Self: Sized,
@@ -563,7 +561,6 @@ pub trait Iterable: Consumer {
     {
         LazyCloned {
             iterable: self,
-            _marker: PhantomData,
         }
     }
 
