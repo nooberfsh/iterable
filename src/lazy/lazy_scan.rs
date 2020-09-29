@@ -42,7 +42,7 @@ where
     pub (super) f: F,
 }
 
-pub (super) fn new_scan_iter<S, C, F>(s: S, c: C, f: F) -> ScanIter<S, C::IntoIter ,F>
+pub (crate) fn new_scan_iter<S, C, F>(s: S, c: C, f: F) -> ScanIter<S, C::IntoIter ,F>
     where
         S: Clone,
         C: Consumer,
