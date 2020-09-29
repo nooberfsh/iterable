@@ -549,6 +549,17 @@ pub trait Iterable: Consumer {
         LazyTake { iterable: self, n}
     }
 
+    fn lazy_scan<S, F: Fn(S, Self::Item) -> S>(self, state: S, f: F) -> LazyScan<S, Self, F>
+    where
+        Self: Sized
+    {
+        LazyScan {
+            iterable: self,
+            state,
+            f
+        }
+    }
+
     fn lazy_flat_map<T: Consumer, F: Fn(Self::Item) -> T>(self, f: F) -> LazyFlatMap<Self, F>
     where
         Self: Sized,

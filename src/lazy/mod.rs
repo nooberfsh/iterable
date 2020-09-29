@@ -15,6 +15,7 @@ mod lazy_skip_while;
 mod lazy_map_while;
 mod lazy_skip;
 mod lazy_take;
+mod lazy_scan;
 
 pub use self::lazy_step_by::*;
 pub use self::lazy_chain::*;
@@ -33,6 +34,7 @@ pub use self::lazy_skip_while::*;
 pub use self::lazy_map_while::*;
 pub use self::lazy_skip::*;
 pub use self::lazy_take::*;
+pub use self::lazy_scan::*;
 
 
 // only used for test lazy combinator
