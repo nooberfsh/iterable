@@ -513,6 +513,13 @@ pub trait Iterable: Consumer {
         LazySkipWhile { iterable: self, f }
     }
 
+    fn lazy_map_while<T, F: Fn(Self::Item) -> Option<T>>(self, f: F) -> LazyMapWhile<Self, F>
+    where
+        Self: Sized,
+    {
+        LazyMapWhile { iterable: self, f }
+    }
+
     fn lazy_flat_map<T: Consumer, F: Fn(Self::Item) -> T>(self, f: F) -> LazyFlatMap<Self, F>
     where
         Self: Sized,
