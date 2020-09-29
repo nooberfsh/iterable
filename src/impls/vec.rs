@@ -1,3 +1,5 @@
+use std::cmp::Ordering;
+
 use crate::Iterable;
 
 impl<T> Iterable for Vec<T> {
@@ -6,6 +8,31 @@ impl<T> Iterable for Vec<T> {
 
     fn rev(mut self) -> Self::F {
         self.reverse();
+        self
+    }
+
+    fn sorted(mut self) -> Self::F
+    where
+        T: Ord
+    {
+        self.sort();
+        self
+    }
+
+    fn sorted_by<F>(mut self, f: F) -> Self::F
+    where
+        F: Fn(&Self::Item, &Self::Item) -> Ordering,
+    {
+        self.sort_by(f);
+        self
+    }
+
+    fn sorted_by_key<K, F>(mut self, f: F) -> Self::F
+    where
+        K: Ord,
+        F: Fn(&Self::Item) -> K,
+    {
+        self.sort_by_key(f);
         self
     }
 }
