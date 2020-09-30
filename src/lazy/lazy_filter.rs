@@ -1,4 +1,4 @@
-use crate::{Iterable, Consumer, IterableSeq};
+use crate::{Iterable, Consumer, IterableSeq, IterableMap};
 
 #[must_use = "iterable adaptors are lazy and do nothing unless consumed"]
 #[derive(Debug, Clone)]
@@ -14,6 +14,14 @@ where
 {
     type C = I::C;
     type CC<U> = I::CC<U>;
+}
+
+impl<K, V, I, F> IterableMap<K, V> for LazyFilter<I, F>
+where
+    I: IterableMap<K, V>,
+    F: Fn(&(K, V)) -> bool,
+{
+    type CCMap<X, Y> = I::CCMap<X, Y>;
 }
 
 impl<I, F> IterableSeq for LazyFilter<I, F>
