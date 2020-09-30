@@ -1,4 +1,4 @@
-use iterable::Iterable;
+use iterable::*;
 
 #[test]
 fn chain() {

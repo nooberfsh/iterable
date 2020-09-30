@@ -1,4 +1,4 @@
-use crate::{Iterable, Consumer};
+use crate::{Iterable, Consumer, IterableSeq};
 
 #[must_use = "iterable adaptors are lazy and do nothing unless consumed"]
 #[derive(Debug, Clone)]
@@ -15,6 +15,12 @@ where
     type C = I::C;
     type CC<U> = I::CC<U>;
 }
+
+impl<I, C> IterableSeq for LazyChain<I, C>
+where
+    I: IterableSeq,
+    C: Consumer<Item=I::Item>
+{}
 
 impl<I, C> Consumer for LazyChain<I, C>
     where

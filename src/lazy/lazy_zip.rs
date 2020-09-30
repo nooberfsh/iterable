@@ -1,4 +1,4 @@
-use crate::{Iterable, Consumer};
+use crate::{Iterable, Consumer, IterableSeq};
 
 #[must_use = "iterable adaptors are lazy and do nothing unless consumed"]
 #[derive(Debug, Clone)]
@@ -14,6 +14,13 @@ where
 {
     type C = I::CC<(I::Item, C::Item)>;
     type CC<U> = I::CC<U>;
+}
+
+impl<I, C> IterableSeq for LazyZip<I, C>
+where
+    I: IterableSeq,
+    C: Consumer,
+{
 }
 
 impl<I, C> Consumer for LazyZip<I, C>

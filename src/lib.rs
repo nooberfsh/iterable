@@ -653,9 +653,9 @@ pub trait IterableSeq: Iterable {
     // lazy combinator
 
     fn lazy_rev(self) -> LazyRev<Self>
-        where
-            Self: Sized,
-            Self::IntoIter: DoubleEndedIterator,
+    where
+        Self: Sized,
+        Self::IntoIter: DoubleEndedIterator,
     {
         LazyRev { iterable: self}
     }

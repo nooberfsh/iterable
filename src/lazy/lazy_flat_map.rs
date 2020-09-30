@@ -1,4 +1,4 @@
-use crate::{Iterable, Consumer, FlattenIter};
+use crate::{Iterable, Consumer, FlattenIter, IterableSeq};
 
 #[must_use = "iterable adaptors are lazy and do nothing unless consumed"]
 #[derive(Debug, Clone)]
@@ -15,6 +15,14 @@ where
 {
     type C = I::CC<<T as Consumer>::Item>;
     type CC<U> = I::CC<U>;
+}
+
+impl<I, F, T> IterableSeq for LazyFlatMap<I, F>
+where
+    I: IterableSeq,
+    F: Fn(I::Item) -> T,
+    T: Consumer,
+{
 }
 
 impl<I, F, T> Consumer for LazyFlatMap<I, F>
