@@ -409,17 +409,10 @@ fn test_ge() {
 }
 
 #[test]
-fn test_growable() {
-    let v = vec![1, 2, 3];
-    let (l, r) = v.partition(|x| x <= &1);
-    assert_eq!(l , vec![1]);
-    assert_eq!(r , vec![2, 3]);
-}
-
-#[test]
-fn test_growable_r() {
-    let v = vec![1, 2, 3];
-    let (l, r) = (&v).partition(|x| x <= &&1);
-    assert_eq!(l , vec![&1]);
-    assert_eq!(r , vec![&2, &3]);
+fn test_join() {
+    let a = vec!["1", "2", "3"];
+    let res = (&a).join(",");
+    assert_eq!(res, "1,2,3");
+    let res = a.join(",");
+    assert_eq!(res, "1,2,3");
 }
