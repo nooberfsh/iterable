@@ -319,15 +319,6 @@ pub trait Iterable: Consumer {
         self.consume().min_by(f)
     }
 
-    fn rev(self) -> Self::F
-    where
-        Self: Sized,
-        Self::F: Producer<Self::Item>,
-        Self::IntoIter: DoubleEndedIterator,
-    {
-        Self::F::produce(self.consume().rev())
-    }
-
     fn unzip<A, B>(self) -> (Self::CF<A>, Self::CF<B>)
     where
         Self: Sized,
@@ -569,14 +560,6 @@ pub trait Iterable: Consumer {
         LazyFlatten { iterable: self}
     }
 
-    fn lazy_rev(self) -> LazyRev<Self>
-    where
-        Self: Sized,
-        Self::IntoIter: DoubleEndedIterator,
-    {
-        LazyRev { iterable: self}
-    }
-
     fn lazy_copied<'a, T>(self) -> LazyCopied<Self>
     where
         T: 'a + Copy,
@@ -629,6 +612,15 @@ pub trait IterableMap<K, V>: Iterable<Item = (K, V)> {
 }
 
 pub trait IterableSeq: Iterable {
+    fn rev(self) -> Self::F
+    where
+        Self: Sized,
+        Self::F: Producer<Self::Item>,
+        Self::IntoIter: DoubleEndedIterator,
+    {
+        Self::F::produce(self.consume().rev())
+    }
+
     fn sorted(self) -> Self::F
     where
         Self: Sized,
@@ -655,6 +647,17 @@ pub trait IterableSeq: Iterable {
         Self::F: Producer<Self::Item>,
     {
         Self::F::produce(self.consume().sorted_by_key(f))
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // lazy combinator
+
+    fn lazy_rev(self) -> LazyRev<Self>
+        where
+            Self: Sized,
+            Self::IntoIter: DoubleEndedIterator,
+    {
+        LazyRev { iterable: self}
     }
 }
 

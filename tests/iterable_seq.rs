@@ -1,6 +1,13 @@
 use iterable::IterableSeq;
 
 #[test]
+fn test_rev() {
+    let v = vec![1, 2, 3];
+    let res = v.rev();
+    assert_eq!(res, vec![3, 2, 1]);
+}
+
+#[test]
 fn test_sorted() {
     let a = vec![5, 10, 3, 0];
     let res = a.sorted();

@@ -1,9 +1,11 @@
-use crate::{Iterable, Consumer};
+use crate::{Iterable, IterableSeq, Consumer};
 
 impl<'a> Iterable for &'a str {
     type C = String;
     type CC<U> = Vec<U>;
 }
+
+impl<'a> IterableSeq for &'a str {}
 
 impl<'a> Consumer for &'a str {
     type Item = char;

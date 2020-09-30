@@ -301,13 +301,6 @@ fn test_min_by() {
 }
 
 #[test]
-fn test_rev() {
-    let v = vec![1, 2, 3];
-    let res = v.rev();
-    assert_eq!(res, vec![3, 2, 1]);
-}
-
-#[test]
 fn test_unzip() {
     let v = vec![(1,2), (3, 4), (5,6)];
     let (a, b) = v.unzip();

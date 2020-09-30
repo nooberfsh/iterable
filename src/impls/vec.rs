@@ -5,14 +5,14 @@ use crate::{Iterable, IterableSeq};
 impl<T> Iterable for Vec<T> {
     type C = Self;
     type CC<U> = Vec<U>;
+}
 
+impl<T> IterableSeq for Vec<T> {
     fn rev(mut self) -> Self::F {
         self.reverse();
         self
     }
-}
 
-impl<T> IterableSeq for Vec<T> {
     fn sorted(mut self) -> Self::F
     where
         T: Ord
