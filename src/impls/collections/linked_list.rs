@@ -1,6 +1,6 @@
 use std::collections::LinkedList;
 
-use crate::Iterable;
+use crate::{Iterable, IterableSeq};
 
 impl<T> Iterable for LinkedList<T> {
     type C = Self;
@@ -11,6 +11,9 @@ impl<'a, T> Iterable for &'a LinkedList<T> {
     type C = LinkedList<&'a T>;
     type CC<U> = LinkedList<U>;
 }
+
+impl<T> IterableSeq for LinkedList<T> {}
+impl<'a, T> IterableSeq for &'a LinkedList<T> {}
 
 delegate_into_iterator!(LinkedList<T>, impl <T>);
 delegate_into_iterator!(&'a LinkedList<T>, impl <'a, T: 'a>);

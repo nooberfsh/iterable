@@ -1,7 +1,8 @@
 use std::array::IntoIter;
 use std::mem::MaybeUninit;
+use std::cmp::Ordering;
 
-use crate::{Iterable, Consumer, Producer, GrowableProducer};
+use crate::{Iterable, IterableSeq, Consumer, Producer, GrowableProducer};
 
 macro_rules! unzip {
     () => {
@@ -30,6 +31,33 @@ impl<T, const N: usize> Iterable for [T; N] {
     unzip!();
 }
 
+impl<T, const N: usize> IterableSeq for [T; N] {
+    fn sorted(mut self) -> Self::F
+    where
+        T: Ord
+    {
+        self.sort();
+        self
+    }
+
+    fn sorted_by<F>(mut self, f: F) -> Self::F
+    where
+        F: Fn(&Self::Item, &Self::Item) -> Ordering,
+    {
+        self.sort_by(f);
+        self
+    }
+
+    fn sorted_by_key<K, F>(mut self, f: F) -> Self::F
+    where
+        K: Ord,
+        F: Fn(&Self::Item) -> K,
+    {
+        self.sort_by_key(f);
+        self
+    }
+}
+
 impl<'a, T: 'a, const N: usize> Iterable for &'a [T; N] {
     type C = Vec<&'a T>;
     type CC<U> = Vec<U>;
@@ -38,6 +66,8 @@ impl<'a, T: 'a, const N: usize> Iterable for &'a [T; N] {
 
     unzip!();
 }
+
+impl<'a, T: 'a, const N: usize> IterableSeq for &'a [T; N] {}
 
 impl<T, const N: usize> Consumer for [T; N] {
     type Item = T;

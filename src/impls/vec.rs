@@ -1,6 +1,6 @@
 use std::cmp::Ordering;
 
-use crate::Iterable;
+use crate::{Iterable, IterableSeq};
 
 impl<T> Iterable for Vec<T> {
     type C = Self;
@@ -10,7 +10,9 @@ impl<T> Iterable for Vec<T> {
         self.reverse();
         self
     }
+}
 
+impl<T> IterableSeq for Vec<T> {
     fn sorted(mut self) -> Self::F
     where
         T: Ord
@@ -41,6 +43,8 @@ impl<'a, T: 'a> Iterable for &'a Vec<T> {
     type C = Vec<&'a T>;
     type CC<U> = Vec<U>;
 }
+
+impl<'a, T: 'a> IterableSeq for &'a Vec<T> {}
 
 delegate_into_iterator!(Vec<T>, impl <T>);
 delegate_into_iterator!(&'a Vec<T>, impl <'a, T: 'a>);

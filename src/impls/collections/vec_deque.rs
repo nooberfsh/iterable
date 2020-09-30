@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
 
-use crate::Iterable;
+use crate::{Iterable, IterableSeq};
 
 impl<T> Iterable for VecDeque<T> {
     type C = Self;
@@ -11,6 +11,9 @@ impl<'a, T> Iterable for &'a VecDeque<T> {
     type C = VecDeque<&'a T>;
     type CC<U> = VecDeque<U>;
 }
+
+impl<T> IterableSeq for VecDeque<T> {}
+impl<'a, T> IterableSeq for &'a VecDeque<T> {}
 
 delegate_into_iterator!(VecDeque<T>, impl <T>);
 delegate_into_iterator!(&'a VecDeque<T>, impl <'a, T: 'a>);

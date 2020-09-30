@@ -463,34 +463,6 @@ pub trait Iterable: Consumer {
         self.consume().join(sep)
     }
 
-    fn sorted(self) -> Self::F
-    where
-        Self: Sized,
-        Self::Item: Ord,
-        Self::F: Producer<Self::Item>,
-    {
-        Self::F::produce(self.consume().sorted())
-    }
-
-    fn sorted_by<F>(self, f: F) -> Self::F
-    where
-        F: Fn(&Self::Item, &Self::Item) -> Ordering,
-        Self: Sized,
-        Self::F: Producer<Self::Item>,
-    {
-        Self::F::produce(self.consume().sorted_by(f))
-    }
-
-    fn sorted_by_key<K, F>(self, f: F) -> Self::F
-    where
-        K: Ord,
-        F: Fn(&Self::Item) -> K,
-        Self: Sized,
-        Self::F: Producer<Self::Item>,
-    {
-        Self::F::produce(self.consume().sorted_by_key(f))
-    }
-
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // lazy combinator
 
@@ -653,6 +625,36 @@ pub trait IterableMap<K, V>: Iterable<Item = (K, V)> {
         Self::CCMap<X, Y>: Producer<(X, Y)>,
     {
         Self::CCMap::<X, Y>::produce(self.consume().map(f))
+    }
+}
+
+pub trait IterableSeq: Iterable {
+    fn sorted(self) -> Self::F
+    where
+        Self: Sized,
+        Self::Item: Ord,
+        Self::F: Producer<Self::Item>,
+    {
+        Self::F::produce(self.consume().sorted())
+    }
+
+    fn sorted_by<F>(self, f: F) -> Self::F
+    where
+        F: Fn(&Self::Item, &Self::Item) -> Ordering,
+        Self: Sized,
+        Self::F: Producer<Self::Item>,
+    {
+        Self::F::produce(self.consume().sorted_by(f))
+    }
+
+    fn sorted_by_key<K, F>(self, f: F) -> Self::F
+    where
+        K: Ord,
+        F: Fn(&Self::Item) -> K,
+        Self: Sized,
+        Self::F: Producer<Self::Item>,
+    {
+        Self::F::produce(self.consume().sorted_by_key(f))
     }
 }
 
