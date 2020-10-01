@@ -1,10 +1,18 @@
 use std::collections::BTreeSet;
 
-use crate::Iterable;
+use crate::{Iterable, GrowableProducer};
 
 impl<T> Iterable for BTreeSet<T> {
     type C = Self;
     type CC<U> = BTreeSet<U>;
+
+    fn add_one(mut self, a: Self::Item) -> Self::C
+    where
+        Self::C: GrowableProducer<Self::Item>
+    {
+        self.grow_one(a);
+        self
+    }
 }
 
 impl<'a, T: 'a> Iterable for &'a BTreeSet<T> {

@@ -1,11 +1,19 @@
 use std::collections::HashSet;
 use std::hash::Hash;
 
-use crate::Iterable;
+use crate::{Iterable, GrowableProducer};
 
 impl<T> Iterable for HashSet<T> {
     type C = Self;
     type CC<U> = HashSet<U>;
+
+    fn add_one(mut self, a: Self::Item) -> Self::C
+    where
+        Self::C: GrowableProducer<Self::Item>
+    {
+        self.grow_one(a);
+        self
+    }
 }
 
 impl<'a, T> Iterable for &'a HashSet<T> {

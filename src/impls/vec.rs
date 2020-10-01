@@ -5,6 +5,11 @@ use crate::{Iterable, IterableSeq};
 impl<T> Iterable for Vec<T> {
     type C = Self;
     type CC<U> = Vec<U>;
+
+    fn add_one(mut self, a: Self::Item) -> Self::C {
+        self.push(a);
+        self
+    }
 }
 
 impl<T> IterableSeq for Vec<T> {

@@ -3,6 +3,11 @@ use crate::{Iterable, IterableSeq, Consumer};
 impl Iterable for String {
     type C = Self;
     type CC<U> = Vec<U>;
+
+    fn add_one(mut self, a: Self::Item) -> Self::C {
+        self.push(a);
+        self
+    }
 }
 
 impl<'a> Iterable for &'a String {

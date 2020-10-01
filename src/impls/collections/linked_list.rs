@@ -5,6 +5,11 @@ use crate::{Iterable, IterableSeq};
 impl<T> Iterable for LinkedList<T> {
     type C = Self;
     type CC<U> = LinkedList<U>;
+
+    fn add_one(mut self, a: Self::Item) -> Self::C {
+        self.push_back(a);
+        self
+    }
 }
 
 impl<'a, T> Iterable for &'a LinkedList<T> {

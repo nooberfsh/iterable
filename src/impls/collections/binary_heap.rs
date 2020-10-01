@@ -1,10 +1,18 @@
 use std::collections::BinaryHeap;
 
-use crate::Iterable;
+use crate::{Iterable, GrowableProducer};
 
 impl<T> Iterable for BinaryHeap<T> {
     type C = BinaryHeap<T>;
     type CC<U> = BinaryHeap<U>;
+
+    fn add_one(mut self, a: Self::Item) -> Self::C
+    where
+        Self::C: GrowableProducer<Self::Item>
+    {
+        self.grow_one(a);
+        self
+    }
 }
 
 impl<'a, T: 'a> Iterable for &'a BinaryHeap<T> {

@@ -1,10 +1,18 @@
 use std::collections::BTreeMap;
 
-use crate::{Iterable, IterableMap};
+use crate::{Iterable, IterableMap, GrowableProducer};
 
 impl<K, V> Iterable for BTreeMap<K, V> {
     type C = Self;
     type CC<U> = Vec<U>;
+
+    fn add_one(mut self, a: Self::Item) -> Self::C
+    where
+        Self::C: GrowableProducer<Self::Item>
+    {
+        self.grow_one(a);
+        self
+    }
 }
 
 impl<'a, K: 'a, V: 'a> Iterable for &'a BTreeMap<K, V> {
