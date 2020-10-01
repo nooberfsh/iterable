@@ -9,7 +9,7 @@ An iterable library for Rust collection like types.
 ```toml
 # Cargo.toml
 [dependencies]
-iterable = "0.3"
+iterable = "0.4"
 ```
 
 ## Features
@@ -44,6 +44,20 @@ fn main() {
     let v = vec![1, 2, 3];
     let res = (&v).filter(|i| i > &&1);
     assert_eq!(res, vec![&2, &3]);
+
+    // functional append
+    let a = vec![1, 2, 3];
+    let res = a.add_one(1);
+    assert_eq!(res, vec![1, 2, 3 ,1]);
+
+    // a bunch of try methods: try_map, try_add_one, try_flat_map, try_flatten
+    let a = vec![1, 2, 3];
+    let res = a.try_map(|x| Some(x));
+    assert_eq!(res, Some(vec![1, 2, 3]));
+
+    let a = vec![1, 2, 3];
+    let res: Result<_,()> = a.try_map(|x| Ok(x));
+    assert_eq!(res, Ok(vec![1, 2, 3]));
 }
 ```
 
