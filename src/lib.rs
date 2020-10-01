@@ -12,9 +12,11 @@
 mod delegate;
 mod impls;
 mod lazy;
+mod util;
 
 pub use impls::*;
 pub use lazy::*;
+pub use util::*;
 
 use std::ops::Try;
 use std::cmp::Ordering;
@@ -452,6 +454,76 @@ pub trait Iterable: Consumer {
         Self::Item: Display,
     {
         self.consume().join(sep)
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // custom methods
+
+    fn add_one(self, a: Self::Item) -> Self::C
+    where
+        Self: Sized,
+        Self::C: GrowableProducer<Self::Item>,
+    {
+        let mut ret = Self::C::produce(self.consume());
+        ret.grow_one(a);
+        ret
+    }
+
+    fn try_add_one<R>(self, r: R) -> R::Map<Self::C>
+    where
+        R: TryExt<Ok = Self::Item>,
+        Self: Sized,
+        Self::C: GrowableProducer<Self::Item>,
+    {
+        let a = r?;
+        let ret = self.add_one(a);
+        R::Map::<Self::C>::from_ok(ret)
+    }
+
+    fn try_map<B, R, F>(self, f: F) -> R::Map<Self::CC<B>>
+    where
+        F: Fn(Self::Item) -> R,
+        R: TryExt<Ok = B>,
+        Self: Sized,
+        Self::CC<B>: GrowableProducer<B>,
+    {
+        let mut ret = Self::CC::<B>::empty();
+        for item in self.consume() {
+            let d = f(item)?;
+            ret.grow_one(d);
+        }
+        R::Map::<Self::CC<B>>::from_ok(ret)
+    }
+
+    fn try_flat_map<B, R, F>(self, f: F) -> R::Map<Self::CC<B::Item>>
+    where
+        F: Fn(Self::Item) -> R,
+        R: TryExt<Ok = B>,
+        B: Consumer,
+        Self: Sized,
+        Self::CC<B::Item>: GrowableProducer<B::Item>,
+    {
+        let mut ret = Self::CC::<B::Item>::empty();
+        for item in self.consume() {
+            let d = f(item)?;
+            ret.grow(d);
+        }
+        R::Map::<Self::CC<B::Item>>::from_ok(ret)
+    }
+
+    fn try_flatten(self) -> <Self::Item as TryExt>::Map<Self::CC<<<Self::Item as Try>::Ok as Consumer>::Item>>
+    where
+        Self: Sized,
+        Self::Item: TryExt,
+        <Self::Item as Try>::Ok: Consumer,
+        Self::CC<<<Self::Item as Try>::Ok as Consumer>::Item>: GrowableProducer<<<Self::Item as Try>::Ok as Consumer>::Item>,
+    {
+        let mut ret = Self::CC::<<<Self::Item as Try>::Ok as Consumer>::Item>::empty();
+        for item in self.consume() {
+            let d = item?;
+            ret.grow(d);
+        }
+        <Self::Item as TryExt>::Map::<Self::CC<<<Self::Item as Try>::Ok as Consumer>::Item>>::from_ok(ret)
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

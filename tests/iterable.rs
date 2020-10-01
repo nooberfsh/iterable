@@ -401,6 +401,9 @@ fn test_ge() {
     assert!(a)
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+// from itertools
+
 #[test]
 fn test_join() {
     let a = vec!["1", "2", "3"];
@@ -408,4 +411,102 @@ fn test_join() {
     assert_eq!(res, "1,2,3");
     let res = a.join(",");
     assert_eq!(res, "1,2,3");
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+// custom methods
+
+#[test]
+fn test_add_one() {
+    let a = vec![1, 2, 3];
+    let res = a.add_one(1);
+    assert_eq!(res, vec![1, 2, 3 ,1]);
+}
+
+#[test]
+fn test_try_add_one_option() {
+    let a = vec![1, 2, 3];
+    let res = a.try_add_one(Some(1));
+    assert_eq!(res, Some(vec![1, 2, 3 ,1]));
+
+    let a = vec![1, 2, 3];
+    let res = a.try_add_one(None);
+    assert_eq!(res, None);
+}
+
+#[test]
+fn test_try_add_one_result() {
+    let a = vec![1, 2, 3];
+    let res : Result<_, ()> = a.try_add_one(Ok(1));
+    assert_eq!(res, Ok(vec![1, 2, 3 ,1]));
+
+    let a = vec![1, 2, 3];
+    let res = a.try_add_one(Err(()));
+    assert_eq!(res, Err(()));
+}
+
+#[test]
+fn test_try_map_option() {
+    let a = vec![1, 2, 3];
+    let res = a.try_map(|x| Some(x));
+    assert_eq!(res, Some(vec![1, 2, 3]));
+
+    let a = vec![1, 2, 3];
+    let res = a.try_map(|x| if x == 1 {None} else {Some(x)});
+    assert_eq!(res, None);
+}
+
+#[test]
+fn test_try_map_result() {
+    let a = vec![1, 2, 3];
+    let res: Result<_,()> = a.try_map(|x| Ok(x));
+    assert_eq!(res, Ok(vec![1, 2, 3]));
+
+    let a = vec![1, 2, 3];
+    let res = a.try_map(|x| if x == 1 {Err(())} else {Ok(x)});
+    assert_eq!(res, Err(()));
+}
+
+#[test]
+fn test_try_flat_map_option() {
+    let a = vec![1, 2, 3];
+    let res = a.try_flat_map(|x| Some([x, 1]));
+    assert_eq!(res, Some(vec![1, 1, 2, 1, 3, 1]));
+
+    let a = vec![1, 2, 3];
+    let res = a.try_flat_map(|x| if x == 1 {None} else {Some([x, 1])});
+    assert_eq!(res, None);
+}
+
+#[test]
+fn test_try_flat_map_result() {
+    let a = vec![1, 2, 3];
+    let res: Result<_,()> = a.try_flat_map(|x| Ok([x, 1]));
+    assert_eq!(res, Ok(vec![1, 1, 2, 1, 3, 1]));
+
+    let a = vec![1, 2, 3];
+    let res = a.try_flat_map(|x| if x == 1 {Err(())} else {Ok([x, 1])});
+    assert_eq!(res, Err(()));
+}
+
+#[test]
+fn test_try_flatten_option() {
+    let a = vec![Some([1,2])];
+    let res = a.try_flatten();
+    assert_eq!(res, Some(vec![1, 2]));
+
+    let a = vec![Some([1,2]), None];
+    let res = a.try_flatten();
+    assert_eq!(res, None);
+}
+
+#[test]
+fn test_try_flatten_result() {
+    let a: Vec<Result<_, ()>>= vec![Ok([1,2])];
+    let res = a.try_flatten();
+    assert_eq!(res, Ok(vec![1, 2]));
+
+    let a = vec![Ok([1,2]), Err(())];
+    let res = a.try_flatten();
+    assert_eq!(res, Err(()));
 }
