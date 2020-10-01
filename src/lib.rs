@@ -677,6 +677,7 @@ pub trait Producer<A> {
 pub trait GrowableProducer<A>: Producer<A> {
     fn empty() -> Self;
     fn grow_one(&mut self, a: A);
+    fn grow<C>(&mut self, c: C) where C: Consumer<Item = A>;
 }
 
 #[cfg(test)]

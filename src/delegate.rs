@@ -33,6 +33,13 @@ macro_rules! delegate_extend {
             fn grow_one(&mut self, a: $item) {
                 <Self as std::iter::Extend<$item>>::extend_one(self, a);
             }
+
+            fn grow<C>(&mut self, c: C)
+            where
+                C: crate::Consumer<Item = $item>
+            {
+                <Self as std::iter::Extend<$item>>::extend(self, c.consume());
+            }
         }
     }
 }

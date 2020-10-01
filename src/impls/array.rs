@@ -110,6 +110,10 @@ impl<T, const N: usize> GrowableProducer<T> for [T; N] {
     fn grow_one(&mut self, _: T) {
         panic!("can not add element to an array!")
     }
+
+    fn grow<C>(&mut self, _: C) where C: Consumer<Item = T> {
+        panic!("can not add elements to an array!")
+    }
 }
 
 // TODO: workaround
@@ -219,5 +223,13 @@ mod tests {
     fn test_growable_producer_grow_one() {
         let a = &mut [1,2,3];
         <[i32; 3] as GrowableProducer<i32>>::grow_one(a, 1);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_growable_producer_grow() {
+        let a = &mut [1,2,3];
+        let s = vec![1, 2, 3];
+        <[i32; 3] as GrowableProducer<i32>>::grow(a, s);
     }
 }
