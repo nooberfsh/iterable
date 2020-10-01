@@ -199,9 +199,9 @@ pub trait Iterable: Consumer {
         let mut r  = <Self::C as GrowableProducer<Self::Item>>::empty();
         for e in self.consume() {
             if f(&e) {
-                l.add_one(e);
+                l.grow_one(e);
             } else {
-                r.add_one(e);
+                r.grow_one(e);
             }
         }
         (l, r)
@@ -329,8 +329,8 @@ pub trait Iterable: Consumer {
         let mut l  = <Self::CF<A> as GrowableProducer<A>>::empty();
         let mut r  = <Self::CF<B> as GrowableProducer<B>>::empty();
         for (a, b) in self.consume() {
-            l.add_one(a);
-            r.add_one(b);
+            l.grow_one(a);
+            r.grow_one(b);
         }
         (l, r)
     }
@@ -676,7 +676,7 @@ pub trait Producer<A> {
 
 pub trait GrowableProducer<A>: Producer<A> {
     fn empty() -> Self;
-    fn add_one(&mut self, a: A);
+    fn grow_one(&mut self, a: A);
 }
 
 #[cfg(test)]

@@ -30,7 +30,7 @@ macro_rules! delegate_extend {
             fn empty() -> Self {
                 Default::default()
             }
-            fn add_one(&mut self, a: $item) {
+            fn grow_one(&mut self, a: $item) {
                 <Self as std::iter::Extend<$item>>::extend_one(self, a);
             }
         }

@@ -107,7 +107,7 @@ impl<T, const N: usize> GrowableProducer<T> for [T; N] {
         panic!("can not create empty array!")
     }
 
-    fn add_one(&mut self, _: T) {
+    fn grow_one(&mut self, _: T) {
         panic!("can not add element to an array!")
     }
 }
@@ -216,8 +216,8 @@ mod tests {
 
     #[test]
     #[should_panic]
-    fn test_growable_producer_add_one() {
+    fn test_growable_producer_grow_one() {
         let a = &mut [1,2,3];
-        <[i32; 3] as GrowableProducer<i32>>::add_one(a, 1);
+        <[i32; 3] as GrowableProducer<i32>>::grow_one(a, 1);
     }
 }
