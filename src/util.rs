@@ -1,7 +1,7 @@
 use std::ops::Try;
 
 pub trait TryExt: Try {
-    type Map<U>: TryExt<Ok = U, Error = Self::Error>;
+    type Map<U>: TryExt<Output = U, Residual = Self::Residual>;
 }
 
 impl<T, E> TryExt for Result<T, E> {

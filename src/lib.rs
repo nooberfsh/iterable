@@ -1,10 +1,8 @@
-#![feature(try_trait)]
+#![feature(try_trait_v2)]
 #![feature(extend_one)]
 #![feature(associated_type_defaults)]
 #![feature(iter_map_while)]
 #![feature(maybe_uninit_uninit_array)]
-#![feature(array_value_iter)]
-#![feature(min_const_generics)]
 #![feature(generic_associated_types)]
 #![allow(incomplete_features)]
 
@@ -212,7 +210,7 @@ pub trait Iterable: Consumer {
     fn try_fold<S, R>(self, init: S, f: impl Fn(S, Self::Item) -> R) -> R
     where
         Self: Sized,
-        R: Try<Ok = S>,
+        R: Try<Output = S>,
     {
         self.consume().try_fold(init, f)
     }
@@ -220,7 +218,7 @@ pub trait Iterable: Consumer {
     fn try_for_each<R>(self, f: impl Fn(Self::Item) -> R) -> R
     where
         Self: Sized,
-        R: Try<Ok = ()>,
+        R: Try<Output = ()>,
     {
         self.consume().try_for_each(f)
     }
@@ -471,19 +469,19 @@ pub trait Iterable: Consumer {
 
     fn try_add_one<R>(self, r: R) -> R::Map<Self::C>
     where
-        R: TryExt<Ok = Self::Item>,
+        R: TryExt<Output = Self::Item>,
         Self: Sized,
         Self::C: GrowableProducer<Self::Item>,
     {
         let a = r?;
         let ret = self.add_one(a);
-        R::Map::<Self::C>::from_ok(ret)
+        R::Map::<Self::C>::from_output(ret)
     }
 
     fn try_map<B, R, F>(self, f: F) -> R::Map<Self::CC<B>>
     where
         F: Fn(Self::Item) -> R,
-        R: TryExt<Ok = B>,
+        R: TryExt<Output = B>,
         Self: Sized,
         Self::CC<B>: GrowableProducer<B>,
     {
@@ -492,13 +490,13 @@ pub trait Iterable: Consumer {
             let d = f(item)?;
             ret.grow_one(d);
         }
-        R::Map::<Self::CC<B>>::from_ok(ret)
+        R::Map::<Self::CC<B>>::from_output(ret)
     }
 
     fn try_flat_map<B, R, F>(self, f: F) -> R::Map<Self::CC<B::Item>>
     where
         F: Fn(Self::Item) -> R,
-        R: TryExt<Ok = B>,
+        R: TryExt<Output = B>,
         B: Consumer,
         Self: Sized,
         Self::CC<B::Item>: GrowableProducer<B::Item>,
@@ -508,22 +506,22 @@ pub trait Iterable: Consumer {
             let d = f(item)?;
             ret.grow(d);
         }
-        R::Map::<Self::CC<B::Item>>::from_ok(ret)
+        R::Map::<Self::CC<B::Item>>::from_output(ret)
     }
 
-    fn try_flatten(self) -> <Self::Item as TryExt>::Map<Self::CC<<<Self::Item as Try>::Ok as Consumer>::Item>>
+    fn try_flatten(self) -> <Self::Item as TryExt>::Map<Self::CC<<<Self::Item as Try>::Output as Consumer>::Item>>
     where
         Self: Sized,
         Self::Item: TryExt,
-        <Self::Item as Try>::Ok: Consumer,
-        Self::CC<<<Self::Item as Try>::Ok as Consumer>::Item>: GrowableProducer<<<Self::Item as Try>::Ok as Consumer>::Item>,
+        <Self::Item as Try>::Output: Consumer,
+        Self::CC<<<Self::Item as Try>::Output as Consumer>::Item>: GrowableProducer<<<Self::Item as Try>::Output as Consumer>::Item>,
     {
-        let mut ret = Self::CC::<<<Self::Item as Try>::Ok as Consumer>::Item>::empty();
+        let mut ret = Self::CC::<<<Self::Item as Try>::Output as Consumer>::Item>::empty();
         for item in self.consume() {
             let d = item?;
             ret.grow(d);
         }
-        <Self::Item as TryExt>::Map::<Self::CC<<<Self::Item as Try>::Ok as Consumer>::Item>>::from_ok(ret)
+        <Self::Item as TryExt>::Map::<Self::CC<<<Self::Item as Try>::Output as Consumer>::Item>>::from_output(ret)
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
