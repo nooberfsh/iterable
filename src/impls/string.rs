@@ -1,4 +1,4 @@
-use crate::{Iterable, IterableSeq, Consumer};
+use crate::{Consumer, Iterable, IterableSeq};
 
 impl Iterable for String {
     type C = Self;
@@ -26,7 +26,7 @@ impl Consumer for String {
         Chars {
             // TODO: use String.into_bytes to avoid alloc
             bytes: self.chars().collect(),
-            idx: 0
+            idx: 0,
         }
     }
 }

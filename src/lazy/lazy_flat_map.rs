@@ -1,4 +1,4 @@
-use crate::{Iterable, Consumer, FlattenIter, IterableSeq};
+use crate::{Consumer, FlattenIter, Iterable, IterableSeq};
 
 #[must_use = "iterable adaptors are lazy and do nothing unless consumed"]
 #[derive(Debug, Clone)]
@@ -44,10 +44,10 @@ where
     F: Fn(I::Item) -> T,
     T: Consumer,
 {
-    inner: FlattenIter<std::iter::Map<I, F>>
+    inner: FlattenIter<std::iter::Map<I, F>>,
 }
 
-fn new_flat_map_iter<C, F, T>(c: C, f: F) -> FlattenMapIter<C::IntoIter, F ,T>
+fn new_flat_map_iter<C, F, T>(c: C, f: F) -> FlattenMapIter<C::IntoIter, F, T>
 where
     C: Consumer,
     F: Fn(C::Item) -> T,
@@ -57,7 +57,7 @@ where
         iter: c.consume().map(f),
         inner: None,
     };
-    FlattenMapIter {inner}
+    FlattenMapIter { inner }
 }
 
 impl<I, F, T> Iterator for FlattenMapIter<I, F, T>
@@ -88,14 +88,14 @@ mod tests {
     fn test_iter() {
         let a = new_flat_map_iter(vec![1, 2, 3], |x| vec![x, 1]);
         let res: Vec<_> = a.collect();
-        assert_eq!(res, vec![1,1,2,1,3,1])
+        assert_eq!(res, vec![1, 1, 2, 1, 3, 1])
     }
 
     #[test]
     fn test_iter2() {
         let a = new_flat_map_iter(vec![1, 2, 3], |x| if x == 2 { vec![] } else { vec![x, 1] });
         let res: Vec<_> = a.collect();
-        assert_eq!(res, vec![1,1,3,1])
+        assert_eq!(res, vec![1, 1, 3, 1])
     }
 
     #[test]

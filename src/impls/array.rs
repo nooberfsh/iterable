@@ -1,15 +1,15 @@
 use std::array::IntoIter;
-use std::mem::MaybeUninit;
 use std::cmp::Ordering;
+use std::mem::MaybeUninit;
 
-use crate::{Iterable, IterableSeq, Consumer, Producer, GrowableProducer};
+use crate::{Consumer, GrowableProducer, Iterable, IterableSeq, Producer};
 
 macro_rules! unzip {
     () => {
         fn unzip<A, B>(self) -> (Self::CF<A>, Self::CF<B>)
         where
             Self: Sized,
-            Self: Iterable<Item=(A, B)>,
+            Self: Iterable<Item = (A, B)>,
         {
             let mut l: [MaybeUninit<A>; N] = MaybeUninit::uninit_array();
             let mut r: [MaybeUninit<B>; N] = MaybeUninit::uninit_array();
@@ -19,7 +19,7 @@ macro_rules! unzip {
             }
             unsafe { (transmute(l), transmute(r)) }
         }
-    }
+    };
 }
 
 impl<T, const N: usize> Iterable for [T; N] {
@@ -34,7 +34,7 @@ impl<T, const N: usize> Iterable for [T; N] {
 impl<T, const N: usize> IterableSeq for [T; N] {
     fn sorted(mut self) -> Self::F
     where
-        T: Ord
+        T: Ord,
     {
         self.sort();
         self
@@ -81,7 +81,7 @@ impl<T, const N: usize> Consumer for [T; N] {
 impl<T, const N: usize> Producer<T> for [T; N] {
     fn produce<IT>(iter: IT) -> Self
     where
-        IT: IntoIterator<Item = T>
+        IT: IntoIterator<Item = T>,
     {
         let mut arr: [MaybeUninit<T>; N] = MaybeUninit::uninit_array();
         let mut count = 0;
@@ -111,7 +111,10 @@ impl<T, const N: usize> GrowableProducer<T> for [T; N] {
         panic!("can not add element to an array!")
     }
 
-    fn grow<C>(&mut self, _: C) where C: Consumer<Item = T> {
+    fn grow<C>(&mut self, _: C)
+    where
+        C: Consumer<Item = T>,
+    {
         panic!("can not add elements to an array!")
     }
 }
@@ -164,7 +167,7 @@ mod tests {
 
     #[test]
     fn test_unzip() {
-        let v = [(1,2), (3, 4), (5,6)];
+        let v = [(1, 2), (3, 4), (5, 6)];
         let (a, b) = v.unzip();
         assert_eq!(a, [1, 3, 5]);
         assert_eq!(b, [2, 4, 6]);
@@ -221,14 +224,14 @@ mod tests {
     #[test]
     #[should_panic]
     fn test_growable_producer_grow_one() {
-        let a = &mut [1,2,3];
+        let a = &mut [1, 2, 3];
         <[i32; 3] as GrowableProducer<i32>>::grow_one(a, 1);
     }
 
     #[test]
     #[should_panic]
     fn test_growable_producer_grow() {
-        let a = &mut [1,2,3];
+        let a = &mut [1, 2, 3];
         let s = vec![1, 2, 3];
         <[i32; 3] as GrowableProducer<i32>>::grow(a, s);
     }

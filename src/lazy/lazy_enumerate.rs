@@ -1,4 +1,4 @@
-use crate::{Iterable, Consumer, IterableSeq};
+use crate::{Consumer, Iterable, IterableSeq};
 
 #[must_use = "iterable adaptors are lazy and do nothing unless consumed"]
 #[derive(Debug, Clone)]
@@ -16,11 +16,7 @@ where
     type CF<U> = I::CF<U>;
 }
 
-impl<I> IterableSeq for LazyEnumerate<I>
-where
-    I: IterableSeq,
-{
-}
+impl<I> IterableSeq for LazyEnumerate<I> where I: IterableSeq {}
 
 impl<I> Consumer for LazyEnumerate<I>
 where
@@ -36,8 +32,8 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::lazy::collect;
     use crate::assert_type;
+    use crate::lazy::collect;
 
     #[test]
     fn smoke() {

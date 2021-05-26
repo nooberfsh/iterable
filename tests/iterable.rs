@@ -1,19 +1,19 @@
+use std::cmp::Ordering;
 use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering::Relaxed;
-use std::cmp::Ordering;
 
 use iterable::Iterable;
 
 #[test]
 fn test_count() {
-    let v = vec![1,2];
+    let v = vec![1, 2];
     let res = v.count();
     assert_eq!(res, 2);
 }
 
 #[test]
 fn test_last() {
-    let v = vec![1,2];
+    let v = vec![1, 2];
     let res = v.last();
     assert_eq!(res, Some(2));
 
@@ -24,7 +24,7 @@ fn test_last() {
 
 #[test]
 fn test_nth() {
-    let v = vec![1,2];
+    let v = vec![1, 2];
     let res = v.clone().nth(10);
     assert_eq!(res, None);
 
@@ -34,25 +34,25 @@ fn test_nth() {
 
 #[test]
 fn test_step_by() {
-    let v = vec![1,2,3,4,5];
+    let v = vec![1, 2, 3, 4, 5];
     let res = v.step_by(2);
-    assert_eq!(res, vec![1,3,5]);
+    assert_eq!(res, vec![1, 3, 5]);
 }
 
 #[test]
 fn test_chain() {
-    let l = vec![1,2,3];
-    let r = [4,5];
+    let l = vec![1, 2, 3];
+    let r = [4, 5];
     let res = l.chain(r);
-    assert_eq!(res, vec![1,2,3,4,5]);
+    assert_eq!(res, vec![1, 2, 3, 4, 5]);
 }
 
 #[test]
 fn test_zip() {
-    let l = vec![1,2,3];
-    let r = [4,5];
+    let l = vec![1, 2, 3];
+    let r = [4, 5];
     let res = l.zip(r);
-    assert_eq!(res, vec![(1,4), (2,5)]);
+    assert_eq!(res, vec![(1, 4), (2, 5)]);
 }
 
 #[test]
@@ -66,7 +66,9 @@ fn test_map() {
 fn test_foreach() {
     let count = AtomicUsize::new(0);
     let v = vec![1, 2, 3];
-    v.foreach(|x| { count.fetch_add(x, Relaxed);} );
+    v.foreach(|x| {
+        count.fetch_add(x, Relaxed);
+    });
     assert_eq!(count.load(Relaxed), 6);
 }
 
@@ -80,7 +82,7 @@ fn test_filter() {
 #[test]
 fn test_filter_map() {
     let v = vec![1, 2, 3];
-    let res = v.filter_map(|x| if x == 2 { None } else { Some(x)});
+    let res = v.filter_map(|x| if x == 2 { None } else { Some(x) });
     assert_eq!(res, vec![1, 3]);
 }
 
@@ -93,42 +95,42 @@ fn test_enumerate() {
 
 #[test]
 fn test_skip_while() {
-    let v = vec![1,2,3];
+    let v = vec![1, 2, 3];
     let res = v.skip_while(|x| x <= &2);
     assert_eq!(res, vec![3]);
 }
 
 #[test]
 fn test_take_while() {
-    let v = vec![1,2,3];
+    let v = vec![1, 2, 3];
     let res = v.take_while(|x| x <= &2);
     assert_eq!(res, vec![1, 2]);
 }
 
 #[test]
 fn test_map_while() {
-    let v = vec![1,2,3];
+    let v = vec![1, 2, 3];
     let res = v.map_while(|x| if x == 2 { None } else { Some(x) });
     assert_eq!(res, vec![1]);
 }
 
 #[test]
 fn test_skip() {
-    let v = vec![1,2,3];
+    let v = vec![1, 2, 3];
     let res = v.skip(2);
     assert_eq!(res, vec![3]);
 }
 
 #[test]
 fn test_take() {
-    let v = vec![1,2,3];
+    let v = vec![1, 2, 3];
     let res = v.take(2);
-    assert_eq!(res, vec![1,2]);
+    assert_eq!(res, vec![1, 2]);
 }
 
 #[test]
 fn test_scan() {
-    let v = vec![1,2,3];
+    let v = vec![1, 2, 3];
     let res = v.scan(10, |s, a| s + a);
     assert_eq!(res, vec![10, 11, 13, 16]);
 
@@ -139,16 +141,16 @@ fn test_scan() {
 
 #[test]
 fn test_flat_map() {
-    let v = vec![1,2];
+    let v = vec![1, 2];
     let res = v.flat_map(|x| [x, x]);
-    assert_eq!(res, vec![1,1,2,2]);
+    assert_eq!(res, vec![1, 1, 2, 2]);
 }
 
 #[test]
 fn test_flatten() {
-    let v = vec![[1,2], [3,4]];
+    let v = vec![[1, 2], [3, 4]];
     let res = v.flatten();
-    assert_eq!(res, vec![1,2,3,4]);
+    assert_eq!(res, vec![1, 2, 3, 4]);
 }
 
 #[test]
@@ -169,7 +171,7 @@ fn test_partition() {
 #[test]
 fn test_try_fold() {
     let v = vec![1, 2, 3];
-    let f = |s: i32, x: i32| if s > 10 { None } else { Some(s+x)};
+    let f = |s: i32, x: i32| if s > 10 { None } else { Some(s + x) };
     let res = v.try_fold(10, f);
     assert!(res.is_none());
 
@@ -302,7 +304,7 @@ fn test_min_by() {
 
 #[test]
 fn test_unzip() {
-    let v = vec![(1,2), (3, 4), (5,6)];
+    let v = vec![(1, 2), (3, 4), (5, 6)];
     let (a, b) = v.unzip();
     assert_eq!(a, vec![1, 3, 5]);
     assert_eq!(b, vec![2, 4, 6]);
@@ -340,7 +342,7 @@ fn test_product() {
 #[test]
 fn test_cmp() {
     let l = vec![1, 2, 3];
-    let r = [1,2,3];
+    let r = [1, 2, 3];
     let a = l.cmp(r);
     assert_eq!(a, Ordering::Equal)
 }
@@ -348,7 +350,7 @@ fn test_cmp() {
 #[test]
 fn test_partial_cmp() {
     let l = vec![2, 2, 3];
-    let r = [1,2,3];
+    let r = [1, 2, 3];
     let a = l.partial_cmp(r);
     assert_eq!(a, Some(Ordering::Greater))
 }
@@ -356,7 +358,7 @@ fn test_partial_cmp() {
 #[test]
 fn test_eq() {
     let l = vec![2, 2, 3];
-    let r = [1,2,3];
+    let r = [1, 2, 3];
     let a = l.eq(r);
     assert!(!a)
 }
@@ -364,7 +366,7 @@ fn test_eq() {
 #[test]
 fn test_ne() {
     let l = vec![2, 2, 3];
-    let r = [1,2,3];
+    let r = [1, 2, 3];
     let a = l.ne(r);
     assert!(a)
 }
@@ -372,7 +374,7 @@ fn test_ne() {
 #[test]
 fn test_lt() {
     let l = vec![2, 2, 3];
-    let r = [1,2,3];
+    let r = [1, 2, 3];
     let a = l.lt(r);
     assert!(!a)
 }
@@ -380,7 +382,7 @@ fn test_lt() {
 #[test]
 fn test_le() {
     let l = vec![2, 2, 3];
-    let r = [1,2,3];
+    let r = [1, 2, 3];
     let a = l.le(r);
     assert!(!a)
 }
@@ -388,7 +390,7 @@ fn test_le() {
 #[test]
 fn test_gt() {
     let l = vec![2, 2, 3];
-    let r = [1,2,3];
+    let r = [1, 2, 3];
     let a = l.gt(r);
     assert!(a)
 }
@@ -396,7 +398,7 @@ fn test_gt() {
 #[test]
 fn test_ge() {
     let l = vec![2, 2, 3];
-    let r = [1,2,3];
+    let r = [1, 2, 3];
     let a = l.ge(r);
     assert!(a)
 }
@@ -420,14 +422,14 @@ fn test_join() {
 fn test_add_one() {
     let a = vec![1, 2, 3];
     let res = a.add_one(1);
-    assert_eq!(res, vec![1, 2, 3 ,1]);
+    assert_eq!(res, vec![1, 2, 3, 1]);
 }
 
 #[test]
 fn test_try_add_one_option() {
     let a = vec![1, 2, 3];
     let res = a.try_add_one(Some(1));
-    assert_eq!(res, Some(vec![1, 2, 3 ,1]));
+    assert_eq!(res, Some(vec![1, 2, 3, 1]));
 
     let a = vec![1, 2, 3];
     let res = a.try_add_one(None);
@@ -437,8 +439,8 @@ fn test_try_add_one_option() {
 #[test]
 fn test_try_add_one_result() {
     let a = vec![1, 2, 3];
-    let res : Result<_, ()> = a.try_add_one(Ok(1));
-    assert_eq!(res, Ok(vec![1, 2, 3 ,1]));
+    let res: Result<_, ()> = a.try_add_one(Ok(1));
+    assert_eq!(res, Ok(vec![1, 2, 3, 1]));
 
     let a = vec![1, 2, 3];
     let res = a.try_add_one(Err(()));
@@ -452,18 +454,18 @@ fn test_try_map_option() {
     assert_eq!(res, Some(vec![1, 2, 3]));
 
     let a = vec![1, 2, 3];
-    let res = a.try_map(|x| if x == 1 {None} else {Some(x)});
+    let res = a.try_map(|x| if x == 1 { None } else { Some(x) });
     assert_eq!(res, None);
 }
 
 #[test]
 fn test_try_map_result() {
     let a = vec![1, 2, 3];
-    let res: Result<_,()> = a.try_map(|x| Ok(x));
+    let res: Result<_, ()> = a.try_map(|x| Ok(x));
     assert_eq!(res, Ok(vec![1, 2, 3]));
 
     let a = vec![1, 2, 3];
-    let res = a.try_map(|x| if x == 1 {Err(())} else {Ok(x)});
+    let res = a.try_map(|x| if x == 1 { Err(()) } else { Ok(x) });
     assert_eq!(res, Err(()));
 }
 
@@ -474,39 +476,39 @@ fn test_try_flat_map_option() {
     assert_eq!(res, Some(vec![1, 1, 2, 1, 3, 1]));
 
     let a = vec![1, 2, 3];
-    let res = a.try_flat_map(|x| if x == 1 {None} else {Some([x, 1])});
+    let res = a.try_flat_map(|x| if x == 1 { None } else { Some([x, 1]) });
     assert_eq!(res, None);
 }
 
 #[test]
 fn test_try_flat_map_result() {
     let a = vec![1, 2, 3];
-    let res: Result<_,()> = a.try_flat_map(|x| Ok([x, 1]));
+    let res: Result<_, ()> = a.try_flat_map(|x| Ok([x, 1]));
     assert_eq!(res, Ok(vec![1, 1, 2, 1, 3, 1]));
 
     let a = vec![1, 2, 3];
-    let res = a.try_flat_map(|x| if x == 1 {Err(())} else {Ok([x, 1])});
+    let res = a.try_flat_map(|x| if x == 1 { Err(()) } else { Ok([x, 1]) });
     assert_eq!(res, Err(()));
 }
 
 #[test]
 fn test_try_flatten_option() {
-    let a = vec![Some([1,2])];
+    let a = vec![Some([1, 2])];
     let res = a.try_flatten();
     assert_eq!(res, Some(vec![1, 2]));
 
-    let a = vec![Some([1,2]), None];
+    let a = vec![Some([1, 2]), None];
     let res = a.try_flatten();
     assert_eq!(res, None);
 }
 
 #[test]
 fn test_try_flatten_result() {
-    let a: Vec<Result<_, ()>>= vec![Ok([1,2])];
+    let a: Vec<Result<_, ()>> = vec![Ok([1, 2])];
     let res = a.try_flatten();
     assert_eq!(res, Ok(vec![1, 2]));
 
-    let a = vec![Ok([1,2]), Err(())];
+    let a = vec![Ok([1, 2]), Err(())];
     let res = a.try_flatten();
     assert_eq!(res, Err(()));
 }

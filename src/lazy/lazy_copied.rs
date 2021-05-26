@@ -1,4 +1,4 @@
-use crate::{Iterable, Consumer, IterableSeq};
+use crate::{Consumer, Iterable, IterableSeq};
 
 #[must_use = "iterable adaptors are lazy and do nothing unless consumed"]
 #[derive(Debug, Clone)]
@@ -39,8 +39,8 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::lazy::collect;
     use crate::assert_type;
+    use crate::lazy::collect;
 
     #[test]
     fn smoke() {

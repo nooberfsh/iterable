@@ -1,6 +1,6 @@
 use std::collections::BTreeSet;
 
-use crate::{Iterable, GrowableProducer};
+use crate::{GrowableProducer, Iterable};
 
 impl<T> Iterable for BTreeSet<T> {
     type C = Self;
@@ -8,7 +8,7 @@ impl<T> Iterable for BTreeSet<T> {
 
     fn add_one(mut self, a: Self::Item) -> Self::C
     where
-        Self::C: GrowableProducer<Self::Item>
+        Self::C: GrowableProducer<Self::Item>,
     {
         self.grow_one(a);
         self

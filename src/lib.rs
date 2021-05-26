@@ -16,12 +16,12 @@ pub use impls::*;
 pub use lazy::*;
 pub use util::*;
 
-use std::ops::Try;
-use std::cmp::Ordering;
-use std::iter::Sum;
-use std::iter::Product;
 use std::cmp::Ord;
+use std::cmp::Ordering;
 use std::fmt::Display;
+use std::iter::Product;
+use std::iter::Sum;
+use std::ops::Try;
 
 use itertools::Itertools;
 
@@ -71,7 +71,7 @@ pub trait Iterable: Consumer {
         Self::C::produce(self.consume().chain(other.consume()))
     }
 
-    fn zip<E>(self, other: impl Consumer<Item=E>) -> Self::CC<(Self::Item, E)>
+    fn zip<E>(self, other: impl Consumer<Item = E>) -> Self::CC<(Self::Item, E)>
     where
         Self: Sized,
         Self::CC<(Self::Item, E)>: Producer<(Self::Item, E)>,
@@ -183,20 +183,22 @@ pub trait Iterable: Consumer {
         Self::Item: Consumer,
         Self::CC<<Self::Item as Consumer>::Item>: Producer<<Self::Item as Consumer>::Item>,
     {
-        Self::CC::<<Self::Item as Consumer>::Item>::produce(self.consume().map(|item| item.consume()).flatten())
+        Self::CC::<<Self::Item as Consumer>::Item>::produce(
+            self.consume().map(|item| item.consume()).flatten(),
+        )
     }
 
     fn by_ref(&self) -> &Self {
         self
     }
 
-    fn partition(self, f: impl Fn(&Self::Item) -> bool) ->(Self::C, Self::C)
+    fn partition(self, f: impl Fn(&Self::Item) -> bool) -> (Self::C, Self::C)
     where
         Self: Sized,
         Self::C: GrowableProducer<Self::Item>,
     {
-        let mut l  = <Self::C as GrowableProducer<Self::Item>>::empty();
-        let mut r  = <Self::C as GrowableProducer<Self::Item>>::empty();
+        let mut l = <Self::C as GrowableProducer<Self::Item>>::empty();
+        let mut r = <Self::C as GrowableProducer<Self::Item>>::empty();
         for e in self.consume() {
             if f(&e) {
                 l.grow_one(e);
@@ -322,12 +324,12 @@ pub trait Iterable: Consumer {
     fn unzip<A, B>(self) -> (Self::CF<A>, Self::CF<B>)
     where
         Self: Sized,
-        Self: Consumer<Item=(A, B)>,
+        Self: Consumer<Item = (A, B)>,
         Self::CF<A>: GrowableProducer<A>,
         Self::CF<B>: GrowableProducer<B>,
     {
-        let mut l  = <Self::CF<A> as GrowableProducer<A>>::empty();
-        let mut r  = <Self::CF<B> as GrowableProducer<B>>::empty();
+        let mut l = <Self::CF<A> as GrowableProducer<A>>::empty();
+        let mut r = <Self::CF<B> as GrowableProducer<B>>::empty();
         for (a, b) in self.consume() {
             l.grow_one(a);
             r.grow_one(b);
@@ -509,12 +511,15 @@ pub trait Iterable: Consumer {
         R::Map::<Self::CC<B::Item>>::from_output(ret)
     }
 
-    fn try_flatten(self) -> <Self::Item as TryExt>::Map<Self::CC<<<Self::Item as Try>::Output as Consumer>::Item>>
+    fn try_flatten(
+        self,
+    ) -> <Self::Item as TryExt>::Map<Self::CC<<<Self::Item as Try>::Output as Consumer>::Item>>
     where
         Self: Sized,
         Self::Item: TryExt,
         <Self::Item as Try>::Output: Consumer,
-        Self::CC<<<Self::Item as Try>::Output as Consumer>::Item>: GrowableProducer<<<Self::Item as Try>::Output as Consumer>::Item>,
+        Self::CC<<<Self::Item as Try>::Output as Consumer>::Item>:
+            GrowableProducer<<<Self::Item as Try>::Output as Consumer>::Item>,
     {
         let mut ret = Self::CC::<<<Self::Item as Try>::Output as Consumer>::Item>::empty();
         for item in self.consume() {
@@ -531,7 +536,10 @@ pub trait Iterable: Consumer {
     where
         Self: Sized,
     {
-        LazyStepBy { iterable: self, step }
+        LazyStepBy {
+            iterable: self,
+            step,
+        }
     }
 
     fn lazy_chain<C: Consumer>(self, c: C) -> LazyChain<Self, C>
@@ -594,24 +602,24 @@ pub trait Iterable: Consumer {
     where
         Self: Sized,
     {
-        LazySkip { iterable: self, n}
+        LazySkip { iterable: self, n }
     }
 
     fn lazy_take(self, n: usize) -> LazyTake<Self>
     where
         Self: Sized,
     {
-        LazyTake { iterable: self, n}
+        LazyTake { iterable: self, n }
     }
 
     fn lazy_scan<S, F: Fn(S, Self::Item) -> S>(self, state: S, f: F) -> LazyScan<S, Self, F>
     where
-        Self: Sized
+        Self: Sized,
     {
         LazyScan {
             iterable: self,
             state,
-            f
+            f,
         }
     }
 
@@ -619,7 +627,7 @@ pub trait Iterable: Consumer {
     where
         Self: Sized,
     {
-         LazyFlatMap { iterable: self, f}
+        LazyFlatMap { iterable: self, f }
     }
 
     fn lazy_flatten(self) -> LazyFlatten<Self>
@@ -627,7 +635,7 @@ pub trait Iterable: Consumer {
         Self: Sized,
         Self::Item: Consumer,
     {
-        LazyFlatten { iterable: self}
+        LazyFlatten { iterable: self }
     }
 
     fn lazy_copied<'a, T>(self) -> LazyCopied<Self>
@@ -636,9 +644,7 @@ pub trait Iterable: Consumer {
         Self: Sized,
         Self: Consumer<Item = &'a T>,
     {
-        LazyCopied {
-            iterable: self,
-        }
+        LazyCopied { iterable: self }
     }
 
     fn lazy_cloned<'a, T>(self) -> LazyCloned<Self>
@@ -647,9 +653,7 @@ pub trait Iterable: Consumer {
         Self: Sized,
         Self: Consumer<Item = &'a T>,
     {
-        LazyCloned {
-            iterable: self,
-        }
+        LazyCloned { iterable: self }
     }
 
     fn lazy_cycle(self) -> LazyCycle<Self>
@@ -727,7 +731,7 @@ pub trait IterableSeq: Iterable {
         Self: Sized,
         Self::IntoIter: DoubleEndedIterator,
     {
-        LazyRev { iterable: self}
+        LazyRev { iterable: self }
     }
 }
 
@@ -747,7 +751,9 @@ pub trait Producer<A> {
 pub trait GrowableProducer<A>: Producer<A> {
     fn empty() -> Self;
     fn grow_one(&mut self, a: A);
-    fn grow<C>(&mut self, c: C) where C: Consumer<Item = A>;
+    fn grow<C>(&mut self, c: C)
+    where
+        C: Consumer<Item = A>;
 }
 
 #[cfg(test)]

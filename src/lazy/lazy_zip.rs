@@ -1,4 +1,4 @@
-use crate::{Iterable, Consumer, IterableSeq};
+use crate::{Consumer, Iterable, IterableSeq};
 
 #[must_use = "iterable adaptors are lazy and do nothing unless consumed"]
 #[derive(Debug, Clone)]
@@ -43,7 +43,7 @@ mod tests {
     #[test]
     fn smoke() {
         let v = vec![1, 2, 3];
-        let s =  vec!['a', 'b'];
+        let s = vec!['a', 'b'];
         let res = collect(v.lazy_zip(s));
         assert_eq!(res, vec![(1, 'a'), (2, 'b')]);
     }

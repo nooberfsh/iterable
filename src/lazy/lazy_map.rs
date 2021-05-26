@@ -1,4 +1,4 @@
-use crate::{Iterable, Consumer, IterableSeq};
+use crate::{Consumer, Iterable, IterableSeq};
 
 #[must_use = "iterable adaptors are lazy and do nothing unless consumed"]
 #[derive(Debug, Clone)]
@@ -27,8 +27,8 @@ where
 
 impl<I, F, T> Consumer for LazyMap<I, F>
 where
-        I: Consumer,
-        F: Fn(I::Item) -> T,
+    I: Consumer,
+    F: Fn(I::Item) -> T,
 {
     type Item = T;
     type IntoIter = std::iter::Map<I::IntoIter, F>;
@@ -40,8 +40,8 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::lazy::collect;
     use crate::assert_type;
+    use crate::lazy::collect;
 
     #[test]
     fn smoke() {
@@ -60,7 +60,9 @@ mod tests {
     #[test]
     fn test_cf() {
         let v = [1, 2, 3];
-        let res = v.lazy_map(|i| i.to_string()).map(|s| s.parse::<u32>().unwrap());
+        let res = v
+            .lazy_map(|i| i.to_string())
+            .map(|s| s.parse::<u32>().unwrap());
         assert_type::<[u32; 3]>(res);
     }
 }

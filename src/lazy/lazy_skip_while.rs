@@ -1,4 +1,4 @@
-use crate::{Iterable, Consumer, IterableSeq, IterableMap};
+use crate::{Consumer, Iterable, IterableMap, IterableSeq};
 
 #[must_use = "iterable adaptors are lazy and do nothing unless consumed"]
 #[derive(Debug, Clone)]

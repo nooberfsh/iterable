@@ -20,7 +20,7 @@ impl<T> IterableSeq for Vec<T> {
 
     fn sorted(mut self) -> Self::F
     where
-        T: Ord
+        T: Ord,
     {
         self.sort();
         self

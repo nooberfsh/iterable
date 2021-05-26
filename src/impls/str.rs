@@ -1,4 +1,4 @@
-use crate::{Iterable, IterableSeq, Consumer};
+use crate::{Consumer, Iterable, IterableSeq};
 
 impl<'a> Iterable for &'a str {
     type C = String;
@@ -11,7 +11,9 @@ impl<'a> Consumer for &'a str {
     type Item = char;
     type IntoIter = std::str::Chars<'a>;
 
-    fn consume(self) -> Self::IntoIter {self.chars()}
+    fn consume(self) -> Self::IntoIter {
+        self.chars()
+    }
 }
 
 #[cfg(test)]

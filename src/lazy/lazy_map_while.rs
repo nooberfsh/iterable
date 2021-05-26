@@ -1,4 +1,4 @@
-use crate::{Iterable, Consumer, IterableSeq};
+use crate::{Consumer, Iterable, IterableSeq};
 
 #[must_use = "iterable adaptors are lazy and do nothing unless consumed"]
 #[derive(Debug, Clone)]
@@ -42,7 +42,7 @@ mod tests {
 
     #[test]
     fn smoke() {
-        let v = vec![1,2,3];
+        let v = vec![1, 2, 3];
         let res = collect(v.lazy_map_while(|x| if x == 2 { None } else { Some(x) }));
         assert_eq!(res, vec![1]);
     }

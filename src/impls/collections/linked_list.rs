@@ -45,7 +45,10 @@ mod tests {
     fn test_cc() {
         let v = ll(vec![1, 2, 3]);
         let res = v.map(|i| i.to_string());
-        assert_eq!(res, ll(vec!["1".to_string(), "2".to_string(), "3".to_string()]));
+        assert_eq!(
+            res,
+            ll(vec!["1".to_string(), "2".to_string(), "3".to_string()])
+        );
     }
 
     #[test]
@@ -59,6 +62,9 @@ mod tests {
     fn test_cc_r() {
         let v = ll(vec![1, 2, 3]);
         let res = (&v).map(|i| i.to_string());
-        assert_eq!(res, ll(vec!["1".to_string(), "2".to_string(), "3".to_string()]));
+        assert_eq!(
+            res,
+            ll(vec!["1".to_string(), "2".to_string(), "3".to_string()])
+        );
     }
 }

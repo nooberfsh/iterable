@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::hash::Hash;
 
-use crate::{Iterable, IterableMap, GrowableProducer};
+use crate::{GrowableProducer, Iterable, IterableMap};
 
 impl<K, V> Iterable for HashMap<K, V> {
     type C = Self;
@@ -9,7 +9,7 @@ impl<K, V> Iterable for HashMap<K, V> {
 
     fn add_one(mut self, a: Self::Item) -> Self::C
     where
-        Self::C: GrowableProducer<Self::Item>
+        Self::C: GrowableProducer<Self::Item>,
     {
         self.grow_one(a);
         self

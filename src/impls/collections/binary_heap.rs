@@ -1,6 +1,6 @@
 use std::collections::BinaryHeap;
 
-use crate::{Iterable, GrowableProducer};
+use crate::{GrowableProducer, Iterable};
 
 impl<T> Iterable for BinaryHeap<T> {
     type C = BinaryHeap<T>;
@@ -8,7 +8,7 @@ impl<T> Iterable for BinaryHeap<T> {
 
     fn add_one(mut self, a: Self::Item) -> Self::C
     where
-        Self::C: GrowableProducer<Self::Item>
+        Self::C: GrowableProducer<Self::Item>,
     {
         self.grow_one(a);
         self
