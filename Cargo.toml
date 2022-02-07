@@ -1,6 +1,6 @@
 [package]
 name = "iterable"
-version = "0.4.1"
+version = "0.5.0"
 authors = ["nooberfsh <nooberfsh@gmail.com>"]
 edition = "2021"
 description = "An iterable library for Rust collection like types."
