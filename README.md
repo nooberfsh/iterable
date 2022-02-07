@@ -9,7 +9,7 @@ An iterable library for Rust collection like types.
 ```toml
 # Cargo.toml
 [dependencies]
-iterable = "0.4"
+iterable = "0.5"
 ```
 
 ## Features
