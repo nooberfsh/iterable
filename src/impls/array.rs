@@ -74,7 +74,7 @@ impl<T, const N: usize> Consumer for [T; N] {
     type IntoIter = IntoIter<T, N>;
 
     fn consume(self) -> Self::IntoIter {
-        IntoIter::new(self)
+        IntoIterator::into_iter(self)
     }
 }
 
