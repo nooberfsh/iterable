@@ -2,7 +2,7 @@
 name = "iterable"
 version = "0.4.1"
 authors = ["nooberfsh <nooberfsh@gmail.com>"]
-edition = "2018"
+edition = "2021"
 description = "An iterable library for Rust collection like types."
 license = "MIT"
 repository = "https://github.com/nooberfsh/iterable"
