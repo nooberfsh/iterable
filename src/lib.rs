@@ -2,8 +2,6 @@
 #![feature(extend_one)]
 #![feature(associated_type_defaults)]
 #![feature(maybe_uninit_uninit_array)]
-#![feature(generic_associated_types)]
-#![allow(incomplete_features)]
 
 #[macro_use]
 mod delegate;
