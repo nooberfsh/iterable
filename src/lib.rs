@@ -1,5 +1,4 @@
 #![feature(try_trait_v2)]
-#![feature(extend_one)]
 #![feature(associated_type_defaults)]
 #![feature(maybe_uninit_uninit_array)]
 

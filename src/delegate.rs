@@ -31,7 +31,7 @@ macro_rules! delegate_extend {
                 Default::default()
             }
             fn grow_one(&mut self, a: $item) {
-                <Self as std::iter::Extend<$item>>::extend_one(self, a);
+                <Self as std::iter::Extend<$item>>::extend(self, Some(a));
             }
 
             fn grow<C>(&mut self, c: C)
