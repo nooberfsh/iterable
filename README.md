@@ -1,15 +1,13 @@
 # Iterable
 An iterable library for Rust collection like types.
 
-## Prerequisites
- - latest rust nightly compiler
  
 ## Installation 
 
 ```toml
 # Cargo.toml
 [dependencies]
-iterable = "0.5"
+iterable = "0.6"
 ```
 
 ## Features
