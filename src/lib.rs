@@ -1,5 +1,3 @@
-#![feature(try_trait_v2)]
-
 #[macro_use]
 mod delegate;
 mod impls;
@@ -15,7 +13,7 @@ use std::cmp::Ordering;
 use std::fmt::Display;
 use std::iter::Product;
 use std::iter::Sum;
-use std::ops::Try;
+use std::ops::ControlFlow::{Continue, Break};
 
 use itertools::Itertools;
 
@@ -203,20 +201,34 @@ pub trait Iterable: Consumer {
         (l, r)
     }
 
-    fn try_fold<S, R>(self, init: S, f: impl Fn(S, Self::Item) -> R) -> R
+    fn try_fold<S, R>(self, init: S, f: impl Fn(S, Self::Item) -> R) -> R::Map<S>
     where
         Self: Sized,
-        R: Try<Output = S>,
+        R: TryExt<Output = S>,
     {
-        self.consume().try_fold(init, f)
+        let mut ret = init;
+        for item in self.consume() {
+            let d = match f(ret, item).branch() {
+                Continue(d) => d,
+                Break(e) => return e,
+            };
+            ret = d;
+        }
+        R::Map::from_output(ret)
     }
 
-    fn try_for_each<R>(self, f: impl Fn(Self::Item) -> R) -> R
+    fn try_for_each<R>(self, f: impl Fn(Self::Item) -> R) -> R::Map<()>
     where
         Self: Sized,
-        R: Try<Output = ()>,
+        R: TryExt<Output = ()>,
     {
-        self.consume().try_for_each(f)
+        for item in self.consume() {
+            match f(item).branch() {
+                Continue(_) => {},
+                Break(e) => return e,
+            };
+        }
+        R::Map::from_output(())
     }
 
     fn fold<S>(self, init: S, f: impl Fn(S, Self::Item) -> S) -> S
@@ -469,9 +481,12 @@ pub trait Iterable: Consumer {
         Self: Sized,
         Self::C: GrowableProducer<Self::Item>,
     {
-        let a = r?;
+        let a = match r.branch() {
+            Continue(d) => d,
+            Break(e) => return e,
+        };
         let ret = self.add_one(a);
-        R::Map::<Self::C>::from_output(ret)
+        R::Map::from_output(ret)
     }
 
     fn try_map<B, R, F>(self, f: F) -> R::Map<Self::CC<B>>
@@ -483,10 +498,13 @@ pub trait Iterable: Consumer {
     {
         let mut ret = Self::CC::<B>::empty();
         for item in self.consume() {
-            let d = f(item)?;
+            let d = match f(item).branch() {
+                Continue(d) => d,
+                Break(e) => return e,
+            };
             ret.grow_one(d);
         }
-        R::Map::<Self::CC<B>>::from_output(ret)
+        R::Map::from_output(ret)
     }
 
     fn try_flat_map<B, R, F>(self, f: F) -> R::Map<Self::CC<B::Item>>
@@ -499,28 +517,34 @@ pub trait Iterable: Consumer {
     {
         let mut ret = Self::CC::<B::Item>::empty();
         for item in self.consume() {
-            let d = f(item)?;
+            let d = match f(item).branch() {
+                Continue(d) => d,
+                Break(e) => return e,
+            };
             ret.grow(d);
         }
-        R::Map::<Self::CC<B::Item>>::from_output(ret)
+        R::Map::from_output(ret)
     }
 
     fn try_flatten(
         self,
-    ) -> <Self::Item as TryExt>::Map<Self::CC<<<Self::Item as Try>::Output as Consumer>::Item>>
+    ) -> <Self::Item as TryExt>::Map<Self::CC<<<Self::Item as TryExt>::Output as Consumer>::Item>>
     where
         Self: Sized,
         Self::Item: TryExt,
-        <Self::Item as Try>::Output: Consumer,
-        Self::CC<<<Self::Item as Try>::Output as Consumer>::Item>:
-            GrowableProducer<<<Self::Item as Try>::Output as Consumer>::Item>,
+        <Self::Item as TryExt>::Output: Consumer,
+        Self::CC<<<Self::Item as TryExt>::Output as Consumer>::Item>:
+            GrowableProducer<<<Self::Item as TryExt>::Output as Consumer>::Item>,
     {
-        let mut ret = Self::CC::<<<Self::Item as Try>::Output as Consumer>::Item>::empty();
+        let mut ret = Self::CC::<<<Self::Item as TryExt>::Output as Consumer>::Item>::empty();
         for item in self.consume() {
-            let d = item?;
+            let d = match item.branch() {
+                Continue(d) => d,
+                Break(e) => return e,
+            };
             ret.grow(d);
         }
-        <Self::Item as TryExt>::Map::<Self::CC<<<Self::Item as Try>::Output as Consumer>::Item>>::from_output(ret)
+        <Self::Item as TryExt>::Map::from_output(ret)
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
