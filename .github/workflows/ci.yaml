@@ -35,7 +35,6 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: check
-          args: -Z features=dev_dep
 
       - name: Run cargo test
         uses: actions-rs/cargo@v1
