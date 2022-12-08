@@ -11,11 +11,11 @@ macro_rules! unzip {
             Self: Sized,
             Self: Iterable<Item = (A, B)>,
         {
-            let mut l: [MaybeUninit<A>; N] = MaybeUninit::uninit_array();
-            let mut r: [MaybeUninit<B>; N] = MaybeUninit::uninit_array();
+            let mut l: [MaybeUninit<A>; N] = unsafe { MaybeUninit::uninit().assume_init() };
+            let mut r: [MaybeUninit<B>; N] = unsafe { MaybeUninit::uninit().assume_init() };
             for (i, (a, b)) in self.consume().enumerate() {
-                l[i] = MaybeUninit::new(a);
-                r[i] = MaybeUninit::new(b);
+                l[i].write(a);
+                r[i].write(b);
             }
             unsafe { (transmute(l), transmute(r)) }
         }
@@ -83,13 +83,13 @@ impl<T, const N: usize> Producer<T> for [T; N] {
     where
         IT: IntoIterator<Item = T>,
     {
-        let mut arr: [MaybeUninit<T>; N] = MaybeUninit::uninit_array();
+        let mut arr: [MaybeUninit<T>; N] = unsafe { MaybeUninit::uninit().assume_init() };
         let mut count = 0;
         for (i, t) in iter.into_iter().enumerate() {
             if i >= N {
                 panic!("iter's length greater then array's length")
             }
-            arr[i] = MaybeUninit::new(t);
+            arr[i].write(t);
             count += 1;
         }
         if count < N {
