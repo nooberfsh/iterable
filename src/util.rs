@@ -20,7 +20,7 @@ impl<T, E> TryExt for Result<T, E> {
     fn branch<U>(self) -> ControlFlow<Self::Map<U>, Self::Output> {
         match self {
             Ok(d) => ControlFlow::Continue(d),
-            Err(e) => ControlFlow::Break(Err(e))
+            Err(e) => ControlFlow::Break(Err(e)),
         }
     }
 }

@@ -13,7 +13,7 @@ use std::cmp::Ordering;
 use std::fmt::Display;
 use std::iter::Product;
 use std::iter::Sum;
-use std::ops::ControlFlow::{Continue, Break};
+use std::ops::ControlFlow::{Break, Continue};
 
 use itertools::Itertools;
 
@@ -224,7 +224,7 @@ pub trait Iterable: Consumer {
     {
         for item in self.consume() {
             match f(item).branch() {
-                Continue(_) => {},
+                Continue(_) => {}
                 Break(e) => return e,
             };
         }
