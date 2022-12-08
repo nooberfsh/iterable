@@ -16,6 +16,9 @@ where
 {
     type C = I::CC<S>;
     type CC<U> = I::CC<U>;
+    // remove below after `associated_type_defaults` stabilized
+    type F = I::CC<S>;
+    type CF<U> = I::CC<U>;
 }
 
 impl<S, I, F> IterableSeq for LazyScan<S, I, F>

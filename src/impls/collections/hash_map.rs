@@ -6,6 +6,9 @@ use crate::{GrowableProducer, Iterable, IterableMap};
 impl<K, V> Iterable for HashMap<K, V> {
     type C = Self;
     type CC<U> = Vec<U>;
+    // remove below after `associated_type_defaults` stabilized
+    type F = Self;
+    type CF<U> = Vec<U>;
 
     fn add_one(mut self, a: Self::Item) -> Self::C
     where
@@ -19,6 +22,9 @@ impl<K, V> Iterable for HashMap<K, V> {
 impl<'a, K: 'a, V: 'a> Iterable for &'a HashMap<K, V> {
     type C = HashMap<&'a K, &'a V>;
     type CC<U> = Vec<U>;
+    // remove below after `associated_type_defaults` stabilized
+    type F = HashMap<&'a K, &'a V>;
+    type CF<U> = Vec<U>;
 }
 
 impl<K, V> IterableMap<K, V> for HashMap<K, V> {

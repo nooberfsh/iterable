@@ -5,6 +5,9 @@ use crate::{GrowableProducer, Iterable, IterableMap};
 impl<K, V> Iterable for BTreeMap<K, V> {
     type C = Self;
     type CC<U> = Vec<U>;
+    // remove below after `associated_type_defaults` stabilized
+    type F = Self;
+    type CF<U> = Vec<U>;
 
     fn add_one(mut self, a: Self::Item) -> Self::C
     where
@@ -18,6 +21,9 @@ impl<K, V> Iterable for BTreeMap<K, V> {
 impl<'a, K: 'a, V: 'a> Iterable for &'a BTreeMap<K, V> {
     type C = BTreeMap<&'a K, &'a V>;
     type CC<U> = Vec<U>;
+    // remove below after `associated_type_defaults` stabilized
+    type F = BTreeMap<&'a K, &'a V>;
+    type CF<U> = Vec<U>;
 }
 
 impl<K, V> IterableMap<K, V> for BTreeMap<K, V> {

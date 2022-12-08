@@ -14,6 +14,9 @@ where
 {
     type C = I::C;
     type CC<U> = I::CC<U>;
+    // remove below after `associated_type_defaults` stabilized
+    type F = I::C;
+    type CF<U> = I::CC<U>;
 }
 
 impl<K, V, I, F> IterableMap<K, V> for LazyFilter<I, F>

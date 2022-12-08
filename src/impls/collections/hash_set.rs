@@ -6,6 +6,9 @@ use crate::{GrowableProducer, Iterable};
 impl<T> Iterable for HashSet<T> {
     type C = Self;
     type CC<U> = HashSet<U>;
+    // remove below after `associated_type_defaults` stabilized
+    type F = Self;
+    type CF<U> = HashSet<U>;
 
     fn add_one(mut self, a: Self::Item) -> Self::C
     where
@@ -19,6 +22,9 @@ impl<T> Iterable for HashSet<T> {
 impl<'a, T> Iterable for &'a HashSet<T> {
     type C = HashSet<&'a T>;
     type CC<U> = HashSet<U>;
+    // remove below after `associated_type_defaults` stabilized
+    type F = HashSet<&'a T>;
+    type CF<U> = HashSet<U>;
 }
 
 delegate_into_iterator!(HashSet<T>, impl <T>);

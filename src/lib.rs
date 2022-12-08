@@ -1,5 +1,4 @@
 #![feature(try_trait_v2)]
-#![feature(associated_type_defaults)]
 
 #[macro_use]
 mod delegate;
@@ -23,8 +22,8 @@ use itertools::Itertools;
 pub trait Iterable: Consumer {
     type C;
     type CC<U>;
-    type F = Self::C;
-    type CF<U> = Self::CC<U>;
+    type F; // set default to `Self::C` after `associated_type_defaults` stabilized
+    type CF<U>; // set default to `Self::CC<U>` after `associated_type_defaults` stabilized;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // from std

@@ -5,6 +5,9 @@ use crate::{GrowableProducer, Iterable};
 impl<T> Iterable for BinaryHeap<T> {
     type C = BinaryHeap<T>;
     type CC<U> = BinaryHeap<U>;
+    // remove below after `associated_type_defaults` stabilized
+    type F = BinaryHeap<T>;
+    type CF<U> = BinaryHeap<U>;
 
     fn add_one(mut self, a: Self::Item) -> Self::C
     where
@@ -18,6 +21,9 @@ impl<T> Iterable for BinaryHeap<T> {
 impl<'a, T: 'a> Iterable for &'a BinaryHeap<T> {
     type C = BinaryHeap<&'a T>;
     type CC<U> = BinaryHeap<U>;
+    // remove below after `associated_type_defaults` stabilized
+    type F = BinaryHeap<&'a T>;
+    type CF<U> = BinaryHeap<U>;
 }
 
 delegate_into_iterator!(BinaryHeap<T>, impl <T>);

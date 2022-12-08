@@ -15,6 +15,9 @@ where
 {
     type C = I::CC<<T as Consumer>::Item>;
     type CC<U> = I::CC<U>;
+    // remove below after `associated_type_defaults` stabilized
+    type F = I::CC<<T as Consumer>::Item>;
+    type CF<U> = I::CC<U>;
 }
 
 impl<I, F, T> IterableSeq for LazyFlatMap<I, F>

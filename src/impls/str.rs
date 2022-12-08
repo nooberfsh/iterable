@@ -3,6 +3,9 @@ use crate::{Consumer, Iterable, IterableSeq};
 impl<'a> Iterable for &'a str {
     type C = String;
     type CC<U> = Vec<U>;
+    // remove below after `associated_type_defaults` stabilized
+    type F = String;
+    type CF<U> = Vec<U>;
 }
 
 impl<'a> IterableSeq for &'a str {}

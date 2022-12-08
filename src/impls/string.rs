@@ -3,6 +3,9 @@ use crate::{Consumer, Iterable, IterableSeq};
 impl Iterable for String {
     type C = Self;
     type CC<U> = Vec<U>;
+    // remove below after `associated_type_defaults` stabilized
+    type F = Self;
+    type CF<U> = Vec<U>;
 
     fn add_one(mut self, a: Self::Item) -> Self::C {
         self.push(a);
@@ -13,6 +16,9 @@ impl Iterable for String {
 impl<'a> Iterable for &'a String {
     type C = String;
     type CC<U> = Vec<U>;
+    // remove below after `associated_type_defaults` stabilized
+    type F = String;
+    type CF<U> = Vec<U>;
 }
 
 impl IterableSeq for String {}

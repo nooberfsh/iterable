@@ -5,6 +5,9 @@ use crate::{Iterable, IterableSeq};
 impl<T> Iterable for Vec<T> {
     type C = Self;
     type CC<U> = Vec<U>;
+    // remove below after `associated_type_defaults` stabilized
+    type F = Self;
+    type CF<U> = Vec<U>;
 
     fn add_one(mut self, a: Self::Item) -> Self::C {
         self.push(a);
@@ -47,6 +50,9 @@ impl<T> IterableSeq for Vec<T> {
 impl<'a, T: 'a> Iterable for &'a Vec<T> {
     type C = Vec<&'a T>;
     type CC<U> = Vec<U>;
+    // remove below after `associated_type_defaults` stabilized
+    type F = Vec<&'a T>;
+    type CF<U> = Vec<U>;
 }
 
 impl<'a, T: 'a> IterableSeq for &'a Vec<T> {}

@@ -3,6 +3,9 @@ use crate::{Iterable, IterableSeq};
 impl<'a, T: 'a> Iterable for &'a [T] {
     type C = Vec<&'a T>;
     type CC<U> = Vec<U>;
+    // remove below after `associated_type_defaults` stabilized
+    type F = Vec<&'a T>;
+    type CF<U> = Vec<U>;
 }
 
 impl<'a, T: 'a> IterableSeq for &'a [T] {}

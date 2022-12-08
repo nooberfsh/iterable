@@ -5,6 +5,9 @@ use crate::{Iterable, IterableSeq};
 impl<T> Iterable for VecDeque<T> {
     type C = Self;
     type CC<U> = VecDeque<U>;
+    // remove below after `associated_type_defaults` stabilized
+    type F = Self;
+    type CF<U> = VecDeque<U>;
 
     fn add_one(mut self, a: Self::Item) -> Self::C {
         self.push_back(a);
@@ -15,6 +18,9 @@ impl<T> Iterable for VecDeque<T> {
 impl<'a, T> Iterable for &'a VecDeque<T> {
     type C = VecDeque<&'a T>;
     type CC<U> = VecDeque<U>;
+    // remove below after `associated_type_defaults` stabilized
+    type F = VecDeque<&'a T>;
+    type CF<U> = VecDeque<U>;
 }
 
 impl<T> IterableSeq for VecDeque<T> {}

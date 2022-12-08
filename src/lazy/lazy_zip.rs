@@ -14,6 +14,9 @@ where
 {
     type C = I::CC<(I::Item, C::Item)>;
     type CC<U> = I::CC<U>;
+    // remove below after `associated_type_defaults` stabilized
+    type F = I::CC<(I::Item, C::Item)>;
+    type CF<U> = I::CC<U>;
 }
 
 impl<I, C> IterableSeq for LazyZip<I, C>

@@ -5,6 +5,9 @@ use crate::{GrowableProducer, Iterable};
 impl<T> Iterable for BTreeSet<T> {
     type C = Self;
     type CC<U> = BTreeSet<U>;
+    // remove below after `associated_type_defaults` stabilized
+    type F = Self;
+    type CF<U> = BTreeSet<U>;
 
     fn add_one(mut self, a: Self::Item) -> Self::C
     where
@@ -18,6 +21,9 @@ impl<T> Iterable for BTreeSet<T> {
 impl<'a, T: 'a> Iterable for &'a BTreeSet<T> {
     type C = BTreeSet<&'a T>;
     type CC<U> = BTreeSet<U>;
+    // remove below after `associated_type_defaults` stabilized
+    type F = BTreeSet<&'a T>;
+    type CF<U> = BTreeSet<U>;
 }
 
 delegate_into_iterator!(BTreeSet<T>, impl <T>);
